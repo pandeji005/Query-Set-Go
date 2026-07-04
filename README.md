@@ -1,4 +1,4 @@
-# <p align="center"><img src="astack_logo.png" alt="A-Stack Logo" width="450"/></p>
+# <p align="center"><img src="astack_logo_white.png" alt="A-Stack Logo" width="450"/></p>
 
 # Query Set Go — SQL Developer Handbook
 
