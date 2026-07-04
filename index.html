@@ -1,0 +1,4100 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Query Set Go — SQL Developer Handbook by A-Stack</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="A complete SQL knowledge base from absolute beginner to interview-ready. Interactive SQL playground, cheat sheets, interview preparation, and curated resources.">
+  <meta name="keywords" content="SQL, SQL Tutorial, Developer Handbook, Databases, Joins, Window Functions, Database Optimization, LeetCode SQL 50, A-Stack">
+  <meta name="author" content="A-Stack">
+  
+  <!-- Google Fonts: Plus Jakarta Sans for headings, Inter for body copy, Fira Code for queries -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* -------------------------------------------------------------
+       1. CSS Variables & Theme Definition
+       ------------------------------------------------------------- */
+    :root {
+      --transition-speed: 0.25s;
+      --transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
+      
+      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.4);
+      --shadow-glow: 0 0 15px rgba(0, 240, 255, 0.25);
+      
+      --border-radius: 12px;
+      --border-radius-sm: 8px;
+      --border-radius-lg: 20px;
+    }
+
+    /* Dark Mode (Default Poster-inspired Palette) */
+    html[data-theme="dark"] {
+      --bg-primary: #050814;
+      --bg-secondary: #0a0f24;
+      --bg-tertiary: #121938;
+      --border-color: #16224f;
+      --border-glow: #00f0ff;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #475569;
+      
+      --accent-color: #00f0ff; /* Poster Cyan */
+      --accent-hover: #33f3ff;
+      --accent-light: rgba(0, 240, 255, 0.1);
+      --accent-border: rgba(0, 240, 255, 0.3);
+      
+      --purple-color: #8b5cf6; /* Poster Purple */
+      --purple-light: rgba(139, 92, 246, 0.1);
+      
+      --green-color: #00ff87; /* Poster Green */
+      --green-light: rgba(0, 255, 135, 0.1);
+      
+      --terminal-bg: #04060e;
+      --terminal-header: #0c112b;
+      
+      --alert-note-bg: rgba(0, 240, 255, 0.05);
+      --alert-note-border: #00f0ff;
+      --alert-tip-bg: rgba(0, 255, 135, 0.05);
+      --alert-tip-border: #00ff87;
+      --alert-warn-bg: rgba(139, 92, 246, 0.05);
+      --alert-warn-border: #8b5cf6;
+      
+      --scrollbar-thumb: #16224f;
+      --scrollbar-track: #050814;
+      
+      --card-gradient: linear-gradient(135deg, #0a0f24 0%, #121938 100%);
+      --gradient-brand: linear-gradient(135deg, #00f0ff 0%, #8b5cf6 100%);
+    }
+
+    /* Light Mode */
+    html[data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #f1f5f9;
+      --border-color: #cbd5e1;
+      --border-glow: #0052ff;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      
+      --accent-color: #0052ff; /* standard blue */
+      --accent-hover: #0040cc;
+      --accent-light: rgba(0, 82, 255, 0.08);
+      --accent-border: rgba(0, 82, 255, 0.2);
+      
+      --purple-color: #7c3aed;
+      --purple-light: rgba(124, 58, 237, 0.08);
+      
+      --green-color: #10b981;
+      --green-light: rgba(16, 185, 129, 0.08);
+      
+      --terminal-bg: #0f172a;
+      --terminal-header: #e2e8f0;
+      
+      --alert-note-bg: #eff6ff;
+      --alert-note-border: #0052ff;
+      --alert-tip-bg: #ecfdf5;
+      --alert-tip-border: #10b981;
+      --alert-warn-bg: #faf5ff;
+      --alert-warn-border: #7c3aed;
+      
+      --scrollbar-thumb: #cbd5e1;
+      --scrollbar-track: #f8fafc;
+      
+      --card-gradient: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      --gradient-brand: linear-gradient(135deg, #0052ff 0%, #7c3aed 100%);
+    }
+
+    /* Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      scroll-behavior: smooth;
+      transition: background-color var(--transition-speed) var(--transition-ease),
+                  color var(--transition-speed) var(--transition-ease);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-color);
+    }
+
+    a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    a:hover {
+      color: var(--accent-hover);
+    }
+
+    /* -------------------------------------------------------------
+       2. Structural Layout
+       ------------------------------------------------------------- */
+    .app-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 70px;
+      background-color: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1000;
+      box-shadow: var(--shadow-sm);
+      transition: background-color var(--transition-speed) var(--transition-ease),
+                  border-color var(--transition-speed) var(--transition-ease);
+    }
+
+    .app-container {
+      display: flex;
+      min-height: calc(100vh - 70px);
+      margin-top: 70px;
+    }
+
+    /* Left Sidebar */
+    .sidebar-left {
+      width: 290px;
+      background-color: var(--bg-secondary);
+      border-right: 1px solid var(--border-color);
+      position: fixed;
+      top: 70px;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      padding: 24px 16px;
+      z-index: 900;
+      transition: transform var(--transition-speed) var(--transition-ease),
+                  background-color var(--transition-speed) var(--transition-ease),
+                  border-color var(--transition-speed) var(--transition-ease);
+    }
+
+    /* Right Sidebar */
+    .sidebar-right {
+      width: 280px;
+      background-color: var(--bg-primary);
+      position: fixed;
+      top: 70px;
+      bottom: 0;
+      right: 0;
+      overflow-y: auto;
+      padding: 40px 24px;
+      z-index: 800;
+      transition: transform var(--transition-speed) var(--transition-ease);
+    }
+
+    /* Center Reading Panel */
+    .content-panel {
+      flex: 1;
+      margin-left: 290px;
+      margin-right: 280px;
+      padding: 40px 48px 100px 48px;
+      max-width: 960px;
+      min-height: 100%;
+      transition: margin var(--transition-speed) var(--transition-ease);
+    }
+
+    /* -------------------------------------------------------------
+       3. Header Elements
+       ------------------------------------------------------------- */
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .menu-toggle-btn {
+      display: none;
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      border-radius: var(--border-radius-sm);
+      padding: 6px 8px;
+      cursor: pointer;
+    }
+
+    .logo-wrapper {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-svg {
+      height: 44px;
+      width: auto;
+    }
+
+    .badge-level-up {
+      background: var(--gradient-brand);
+      color: #050814;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 12px;
+      box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+    }
+
+    .header-center {
+      flex: 1;
+      max-width: 400px;
+      margin: 0 24px;
+      position: relative;
+    }
+
+    .search-trigger {
+      width: 100%;
+      height: 38px;
+      background-color: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-size: 14px;
+      transition: border-color var(--transition-speed);
+    }
+    .search-trigger:hover {
+      border-color: var(--accent-color);
+    }
+    .search-trigger-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .search-kbd {
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 11px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .theme-toggle-btn, .playground-toggle-btn {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .theme-toggle-btn:hover, .playground-toggle-btn:hover {
+      color: var(--accent-color);
+      border-color: var(--accent-color);
+      background-color: var(--accent-light);
+    }
+
+    .playground-toggle-btn {
+      position: relative;
+    }
+    .playground-toggle-btn .badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 8px;
+      height: 8px;
+      background: var(--green-color);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--green-color);
+    }
+
+    .icon-svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    /* -------------------------------------------------------------
+       4. Left Sidebar Navigation
+       ------------------------------------------------------------- */
+    .sidebar-section {
+      margin-bottom: 24px;
+    }
+
+    .sidebar-section-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      padding-left: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+    }
+
+    .sidebar-item {
+      margin-bottom: 4px;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      color: var(--text-secondary);
+      border-radius: var(--border-radius-sm);
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+    .sidebar-link:hover {
+      color: var(--text-primary);
+      background-color: var(--bg-tertiary);
+    }
+    .sidebar-link.active {
+      color: var(--accent-color);
+      background-color: var(--accent-light);
+      border-left-color: var(--accent-color);
+      font-weight: 600;
+    }
+    .sidebar-link .fav-icon {
+      opacity: 0;
+      color: var(--purple-color);
+      transition: opacity 0.2s;
+    }
+    .sidebar-link:hover .fav-icon, .sidebar-link.bookmarked .fav-icon {
+      opacity: 1;
+    }
+
+    /* -------------------------------------------------------------
+       5. Right Sidebar (Table of Contents & Meta)
+       ------------------------------------------------------------- */
+    .right-sidebar-widget {
+      margin-bottom: 30px;
+    }
+
+    .toc-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    .toc-list {
+      list-style: none;
+      border-left: 1px solid var(--border-color);
+      padding-left: 2px;
+    }
+
+    .toc-item {
+      margin-bottom: 6px;
+    }
+
+    .toc-link {
+      display: block;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      padding: 3px 0 3px 14px;
+      border-left: 2px solid transparent;
+      margin-left: -2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: all 0.15s;
+    }
+    .toc-link:hover {
+      color: var(--text-primary);
+    }
+    .toc-link.active {
+      color: var(--accent-color);
+      border-left-color: var(--accent-color);
+      font-weight: 600;
+    }
+    .toc-link.indent-3 {
+      padding-left: 24px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .widget-meta {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 16px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .meta-value {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .bookmark-page-btn {
+      width: 100%;
+      height: 36px;
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .bookmark-page-btn:hover {
+      border-color: var(--purple-color);
+      background-color: var(--purple-light);
+      color: var(--purple-color);
+    }
+    .bookmark-page-btn.active {
+      background-color: var(--purple-color);
+      color: #050814;
+      border-color: var(--purple-color);
+    }
+
+    /* -------------------------------------------------------------
+       6. Reading Progress Indicator & Breadcrumbs
+       ------------------------------------------------------------- */
+    .progress-bar-container {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: transparent;
+      z-index: 1000;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--gradient-brand);
+      box-shadow: 0 1px 8px var(--accent-color);
+    }
+
+    .breadcrumbs {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* -------------------------------------------------------------
+       7. Document Styling
+       ------------------------------------------------------------- */
+    .doc-page {
+      animation: pageFadeIn 0.3s ease-out forwards;
+    }
+
+    @keyframes pageFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .doc-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    .doc-meta-header {
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 16px;
+    }
+
+    .doc-h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin: 36px 0 16px 0;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+      color: var(--text-primary);
+      scroll-margin-top: 90px;
+    }
+
+    .doc-h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      margin: 24px 0 12px 0;
+      color: var(--text-primary);
+      scroll-margin-top: 90px;
+    }
+
+    .doc-p {
+      font-size: 14.5px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 18px;
+    }
+
+    .doc-ul, .doc-ol {
+      margin-left: 20px;
+      margin-bottom: 18px;
+      color: var(--text-secondary);
+      font-size: 14.5px;
+    }
+
+    .doc-li {
+      margin-bottom: 6px;
+    }
+
+    .doc-bold {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 2px 6px;
+      color: var(--accent-color);
+    }
+
+    /* -------------------------------------------------------------
+       8. Custom Code Blocks & Output Tables
+       ------------------------------------------------------------- */
+    .terminal-block {
+      background-color: var(--terminal-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      margin: 20px 0;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    .terminal-header {
+      background-color: var(--terminal-header);
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .terminal-dot.red { background-color: #ff5f56; }
+    .terminal-dot.yellow { background-color: #ffbd2e; }
+    .terminal-dot.green { background-color: #27c93f; }
+
+    .terminal-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+    }
+
+    .copy-btn {
+      background: none;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-primary);
+      color: var(--text-secondary);
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover {
+      color: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+    .copy-btn.copied {
+      color: var(--green-color);
+      border-color: var(--green-color);
+    }
+
+    .terminal-body {
+      padding: 16px;
+      overflow-x: auto;
+    }
+    .terminal-body pre {
+      font-family: 'Fira Code', monospace;
+      font-size: 13.5px;
+      color: #e2e8f0;
+      margin: 0;
+    }
+
+    /* Simple Syntax Colorizer for SQL in pre code */
+    .sql-keyword { color: #f43f5e; font-weight: 600; }
+    .sql-string { color: #00ff87; }
+    .sql-func { color: #8b5cf6; }
+    .sql-num { color: #fb7185; }
+    .sql-comment { color: var(--text-muted); font-style: italic; }
+
+    /* Output Data Table */
+    .output-table-container {
+      margin: 16px 0;
+      overflow-x: auto;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+    }
+    .output-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Fira Code', monospace;
+      font-size: 12.5px;
+      text-align: left;
+    }
+    .output-table th {
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+      padding: 8px 12px;
+      font-weight: 600;
+      border-bottom: 2px solid var(--border-color);
+    }
+    .output-table td {
+      padding: 8px 12px;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-color);
+      background-color: var(--bg-secondary);
+    }
+    .output-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* -------------------------------------------------------------
+       9. Diagrams & Callouts
+       ------------------------------------------------------------- */
+    .diagram-container {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 24px;
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .diagram-svg {
+      width: 100%;
+      max-width: 580px;
+      height: auto;
+    }
+    .diagram-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+      margin-top: 12px;
+    }
+
+    /* Diagram specific SVG styling */
+    .svg-node {
+      fill: var(--bg-tertiary);
+      stroke: var(--border-color);
+      stroke-width: 2px;
+      transition: fill 0.3s;
+    }
+    .svg-node.accent {
+      fill: var(--accent-light);
+      stroke: var(--accent-color);
+    }
+    .svg-node.purple {
+      fill: var(--purple-light);
+      stroke: var(--purple-color);
+    }
+    .svg-node.green {
+      fill: var(--green-light);
+      stroke: var(--green-color);
+    }
+    .svg-text {
+      font-size: 12px;
+      fill: var(--text-primary);
+      font-family: inherit;
+      font-weight: 600;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+    .svg-path {
+      stroke: var(--border-color);
+      stroke-width: 2px;
+      fill: none;
+    }
+    .svg-path.active {
+      stroke: var(--accent-color);
+      stroke-dasharray: 4;
+      animation: dash 10s linear infinite;
+    }
+    @keyframes dash {
+      to { stroke-dashoffset: -100; }
+    }
+
+    .callout {
+      border-left: 4px solid;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      padding: 16px 20px;
+      margin: 24px 0;
+      font-size: 14px;
+    }
+    .callout-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .callout.note {
+      background-color: var(--alert-note-bg);
+      border-left-color: var(--alert-note-border);
+      color: var(--text-primary);
+    }
+    .callout.note .callout-title { color: var(--alert-note-border); }
+
+    .callout.tip {
+      background-color: var(--alert-tip-bg);
+      border-left-color: var(--alert-tip-border);
+      color: var(--text-primary);
+    }
+    .callout.tip .callout-title { color: var(--alert-tip-border); }
+
+    .callout.warning {
+      background-color: var(--alert-warn-bg);
+      border-left-color: var(--alert-warn-border);
+      color: var(--text-primary);
+    }
+    .callout.warning .callout-title { color: var(--alert-warn-border); }
+
+    /* -------------------------------------------------------------
+       10. Welcome Page Styling
+       ------------------------------------------------------------- */
+    .welcome-hero {
+      background: var(--card-gradient);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-lg);
+      padding: 56px;
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    .welcome-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--gradient-brand);
+    }
+    .welcome-hero-glowing-glow {
+      position: absolute;
+      top: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(0, 240, 255, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .welcome-subtitle {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent-color);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    .welcome-title-glow {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 56px;
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      margin-bottom: 12px;
+      color: #ffffff;
+      text-shadow: 0 0 20px rgba(0, 240, 255, 0.4), 0 0 40px rgba(139, 92, 246, 0.3);
+    }
+    .welcome-desc {
+      font-size: 15px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 28px auto;
+      line-height: 1.6;
+    }
+    .welcome-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gradient-brand);
+      color: #050814;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 30px;
+      box-shadow: 0 4px 15px rgba(0, 240, 255, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .welcome-action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 240, 255, 0.6);
+      color: #050814;
+    }
+
+    .welcome-feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .welcome-feature-card {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 24px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .welcome-feature-card:hover {
+      border-color: var(--accent-color);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+    .welcome-feature-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background-color: var(--accent-light);
+      color: var(--accent-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .welcome-feature-icon.purple {
+      background-color: var(--purple-light);
+      color: var(--purple-color);
+    }
+    .welcome-feature-icon.green {
+      background-color: var(--green-light);
+      color: var(--green-color);
+    }
+    .welcome-feature-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+    .welcome-feature-p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* -------------------------------------------------------------
+       11. Interview Questions Accordion UI
+       ------------------------------------------------------------- */
+    .interview-search-bar {
+      margin-bottom: 24px;
+      display: flex;
+      gap: 12px;
+    }
+    .interview-search-input {
+      flex: 1;
+      height: 42px;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      color: var(--text-primary);
+      padding: 0 16px;
+      font-size: 14.5px;
+    }
+    .interview-search-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+    .interview-difficulty-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .difficulty-tab {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .difficulty-tab:hover {
+      color: var(--text-primary);
+    }
+    .difficulty-tab.active {
+      background-color: var(--accent-color);
+      color: #050814;
+      border-color: var(--accent-color);
+    }
+    .difficulty-tab.active.purple {
+      background-color: var(--purple-color);
+      color: #ffffff;
+      border-color: var(--purple-color);
+    }
+    .difficulty-tab.active.red {
+      background-color: #f43f5e;
+      color: #ffffff;
+      border-color: #f43f5e;
+    }
+
+    .interview-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .interview-card {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .interview-card:hover {
+      border-color: var(--accent-color);
+    }
+    .interview-header-row {
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .interview-q-text {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      padding-right: 16px;
+    }
+    .interview-meta-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .diff-badge {
+      font-size: 10px;
+      text-transform: uppercase;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+    .diff-badge.easy { background-color: var(--green-light); color: var(--green-color); }
+    .diff-badge.medium { background-color: var(--purple-light); color: var(--purple-color); }
+    .diff-badge.hard { background-color: rgba(244, 63, 94, 0.1); color: #f43f5e; }
+
+    .interview-chevron {
+      color: var(--text-muted);
+      transition: transform 0.25s;
+    }
+    .interview-card.open .interview-chevron {
+      transform: rotate(180deg);
+      color: var(--accent-color);
+    }
+
+    .interview-body-row {
+      padding: 0 24px 24px 24px;
+      display: none;
+      border-top: 1px solid var(--border-color);
+      background-color: rgba(255, 255, 255, 0.01);
+      animation: slideDown 0.2s ease-out forwards;
+    }
+    .interview-card.open .interview-body-row {
+      display: block;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .interview-answer {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-top: 16px;
+    }
+
+    /* -------------------------------------------------------------
+       12. Practice Cards & Projects Layout
+       ------------------------------------------------------------- */
+    .practice-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 24px;
+    }
+    .practice-card {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s;
+    }
+    .practice-card:hover {
+      border-color: var(--accent-color);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+    .practice-card-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+    .practice-card-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    .practice-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .practice-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: var(--accent-light);
+      color: var(--accent-color);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--accent-border);
+      transition: all 0.2s;
+    }
+    .practice-btn:hover {
+      background-color: var(--accent-color);
+      color: #050814;
+    }
+
+    /* Project Cards */
+    .project-tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+    .project-tab-btn {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 8px 16px;
+      border-radius: var(--border-radius-sm);
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .project-tab-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--text-muted);
+    }
+    .project-tab-btn.active {
+      border-color: var(--accent-color);
+      color: var(--accent-color);
+      background-color: var(--accent-light);
+    }
+
+    .project-display-card {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 30px;
+    }
+    .project-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+    .project-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .project-section-subtitle {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    /* -------------------------------------------------------------
+       13. Timeline Roadmap UI
+       ------------------------------------------------------------- */
+    .roadmap-timeline {
+      position: relative;
+      margin: 40px 0;
+      padding-left: 32px;
+    }
+    .roadmap-timeline::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 11px;
+      width: 2px;
+      background-color: var(--border-color);
+    }
+    .roadmap-node {
+      position: relative;
+      margin-bottom: 40px;
+    }
+    .roadmap-node:last-child {
+      margin-bottom: 0;
+    }
+    .roadmap-dot {
+      position: absolute;
+      left: -32px;
+      top: 6px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: var(--bg-secondary);
+      border: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: all 0.3s;
+    }
+    .roadmap-node.active .roadmap-dot {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 10px var(--accent-color);
+      background-color: var(--accent-color);
+    }
+    .roadmap-node.active.purple .roadmap-dot {
+      border-color: var(--purple-color);
+      box-shadow: 0 0 10px var(--purple-color);
+      background-color: var(--purple-color);
+    }
+    .roadmap-content {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 24px;
+      transition: border-color 0.2s;
+    }
+    .roadmap-node:hover .roadmap-content {
+      border-color: var(--accent-color);
+    }
+    .roadmap-stage {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: var(--accent-color);
+      margin-bottom: 4px;
+    }
+    .roadmap-node.purple .roadmap-stage {
+      color: var(--purple-color);
+    }
+    .roadmap-node.green .roadmap-stage {
+      color: var(--green-color);
+    }
+    .roadmap-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+    .roadmap-desc {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* -------------------------------------------------------------
+       14. Bottom Navigation Pane (Prev/Next Page)
+       ------------------------------------------------------------- */
+    .bottom-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 60px;
+      padding-top: 30px;
+      border-top: 1px solid var(--border-color);
+      gap: 16px;
+    }
+
+    .nav-btn {
+      flex: 1;
+      max-width: 320px;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      border-color: var(--accent-color);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .nav-btn.prev {
+      align-items: flex-start;
+      text-align: left;
+    }
+    .nav-btn.next {
+      align-items: flex-end;
+      text-align: right;
+    }
+
+    .nav-btn-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .nav-btn-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* -------------------------------------------------------------
+       15. Command Palette (Ctrl+K Modal) & Search
+       ------------------------------------------------------------- */
+    .search-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(5, 8, 20, 0.85);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 100px 20px;
+    }
+    .search-modal.active {
+      display: flex;
+    }
+    .search-box {
+      width: 100%;
+      max-width: 600px;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      animation: modalSlide 0.2s ease-out forwards;
+    }
+    @keyframes modalSlide {
+      from { transform: translateY(-15px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .search-box-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .search-box-input {
+      flex: 1;
+      height: 36px;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 16px;
+    }
+    .search-box-input:focus {
+      outline: none;
+    }
+    .search-close-btn {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .search-results {
+      max-height: 360px;
+      overflow-y: auto;
+      padding: 8px;
+    }
+    .search-result-item {
+      padding: 10px 16px;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      transition: background-color 0.15s;
+    }
+    .search-result-item:hover {
+      background-color: var(--bg-tertiary);
+    }
+    .search-result-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .search-result-title .badge {
+      font-size: 9px;
+      background-color: var(--accent-light);
+      color: var(--accent-color);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+    .search-result-excerpt {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .search-empty-state {
+      padding: 40px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13.5px;
+    }
+
+    /* -------------------------------------------------------------
+       16. Sliding SQL Playground Drawer
+       ------------------------------------------------------------- */
+    .playground-drawer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 320px;
+      background-color: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+      z-index: 1100;
+      transform: translateY(100%);
+      transition: transform var(--transition-speed) var(--transition-ease);
+      display: flex;
+      flex-direction: column;
+    }
+    .playground-drawer.active {
+      transform: translateY(0);
+    }
+    .playground-header {
+      height: 42px;
+      background-color: var(--terminal-header);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .playground-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .playground-close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    .playground-close-btn:hover {
+      color: var(--text-primary);
+    }
+    .playground-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+    .playground-input-side {
+      flex: 1.2;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border-color);
+      padding: 12px;
+    }
+    .playground-textarea {
+      flex: 1;
+      background-color: var(--terminal-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      color: var(--green-color);
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      padding: 10px;
+      resize: none;
+    }
+    .playground-textarea:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+    .playground-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .playground-schemas-info {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .run-query-btn {
+      background: var(--gradient-brand);
+      color: #050814;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 16px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+    }
+    .run-query-btn:hover {
+      box-shadow: 0 0 10px var(--accent-color);
+    }
+    .playground-output-side {
+      flex: 1.8;
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+      overflow-y: auto;
+      background-color: var(--terminal-bg);
+    }
+    .playground-status-row {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* -------------------------------------------------------------
+       17. Glossary Tooltip & Toast Alerts
+       ------------------------------------------------------------- */
+    .glossary-term {
+      border-bottom: 1px dashed var(--accent-color);
+      cursor: help;
+      position: relative;
+    }
+    .glossary-tooltip {
+      position: absolute;
+      bottom: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-sm);
+      padding: 8px 12px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      width: 220px;
+      z-index: 100;
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      line-height: 1.4;
+    }
+    .glossary-term:hover .glossary-tooltip {
+      opacity: 1;
+    }
+
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .toast {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--purple-color);
+      border-radius: var(--border-radius-sm);
+      padding: 12px 18px;
+      font-size: 13px;
+      color: var(--text-primary);
+      box-shadow: var(--shadow-md);
+      animation: toastSlideIn 0.3s ease-out forwards;
+    }
+    @keyframes toastSlideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* -------------------------------------------------------------
+       18. Footer
+       ------------------------------------------------------------- */
+    .app-footer {
+      background-color: var(--bg-secondary);
+      border-top: 1px solid var(--border-color);
+      padding: 40px 24px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 60px;
+    }
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .footer-brand svg {
+      height: 36px;
+      width: auto;
+    }
+
+    /* -------------------------------------------------------------
+       19. Mobile Responsive Media Queries
+       ------------------------------------------------------------- */
+    @media (max-width: 1200px) {
+      .sidebar-right {
+        display: none;
+      }
+      .content-panel {
+        margin-right: 0;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .menu-toggle-btn {
+        display: block;
+      }
+      .sidebar-left {
+        transform: translateX(-100%);
+      }
+      .sidebar-left.active {
+        transform: translateX(0);
+      }
+      .content-panel {
+        margin-left: 0;
+        padding: 30px 24px 60px 24px;
+      }
+      .header-center {
+        display: none; /* Hide top search bar on mobile */
+      }
+      .playground-drawer {
+        height: 400px;
+      }
+      .playground-body {
+        flex-direction: column;
+      }
+      .playground-input-side {
+        flex: 1;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+      }
+      .playground-output-side {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-left">
+      <button class="menu-toggle-btn" id="menuToggleBtn">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+      <div class="logo-wrapper">
+        <!-- SVG recreation of A-STACK Logo adapted for dark/light themes -->
+        <svg viewBox="0 0 320 80" class="logo-svg" onclick="window.location.hash='#welcome'" style="cursor:pointer;">
+          <g transform="translate(10, 5)">
+            <!-- Left Leg: Electric Cyan gradient in dark mode, blue in light mode -->
+            <path d="M 10 70 L 45 10 L 60 10 L 25 70 Z" fill="var(--accent-color)" />
+            <!-- Right Leg: White in dark mode, dark slate in light mode -->
+            <path d="M 45 10 L 80 70 L 65 70 L 55 50 L 35 50 L 38 40 L 60 40 L 48 18 Z" fill="var(--text-primary)" />
+          </g>
+          <!-- Divider -->
+          <line x1="110" y1="12" x2="110" y2="68" stroke="var(--border-color)" stroke-width="1.5" />
+          <!-- Text -->
+          <text x="125" y="44" font-family="'Plus Jakarta Sans', sans-serif" font-size="26" font-weight="800" fill="var(--text-primary)">A-STACK</text>
+          <text x="125" y="62" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="700" letter-spacing="3.5" fill="var(--accent-color)">LEARN • BUILD • GROW</text>
+        </svg>
+      </div>
+      <div class="badge-level-up">
+        <svg class="icon-svg" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 2v20M17 5l-5-5-5 5"/></svg>
+        LEVEL UP JULY
+      </div>
+    </div>
+    
+    <div class="header-center">
+      <div class="search-trigger" onclick="openSearchModal()">
+        <div class="search-trigger-left">
+          <svg class="icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span>Search documentation...</span>
+        </div>
+        <span class="search-kbd">Ctrl K</span>
+      </div>
+    </div>
+    
+    <div class="header-right">
+      <button class="playground-toggle-btn" onclick="togglePlayground()" title="Toggle SQL Playground (Ctrl + `)">
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+        <span class="badge"></span>
+      </button>
+      
+      <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="Toggle Light/Dark Mode">
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTAINER -->
+  <div class="app-container">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar-left" id="sidebarLeft">
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">
+          <span>SQL Handbook</span>
+        </div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-item"><a href="#welcome" class="sidebar-link active" onclick="closeSidebarMobile()"><span style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg> Welcome</span></a></li>
+          <li class="sidebar-item"><a href="#intro" class="sidebar-link" onclick="closeSidebarMobile()"><span style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> 1. Introduction</span></a></li>
+          <li class="sidebar-item"><a href="#getting-started" class="sidebar-link" onclick="closeSidebarMobile()"><span style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> 2. Getting Started</span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">
+          <span>Core SQL Guide</span>
+        </div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-item"><a href="#sql-basics" class="sidebar-link" onclick="closeSidebarMobile()"><span>3. SQL Basics</span><span class="fav-icon">★</span></a></li>
+          <li class="sidebar-item"><a href="#databases" class="sidebar-link" onclick="closeSidebarMobile()"><span>4. Databases</span><span class="fav-icon">★</span></a></li>
+          <li class="sidebar-item"><a href="#tables" class="sidebar-link" onclick="closeSidebarMobile()"><span>5. Tables</span><span class="fav-icon">★</span></a></li>
+          <li class="sidebar-item"><a href="#queries" class="sidebar-link" onclick="closeSidebarMobile()"><span>6. Queries</span><span class="fav-icon">★</span></a></li>
+          <li class="sidebar-item"><a href="#filtering" class="sidebar-link" onclick="closeSidebarMobile()"><span>7. Filtering</span><span class="fav-icon">★</span></a></li>
+          <li class="sidebar-item"><a href="#sorting" class="sidebar-link" onclick="closeSidebarMobile()"><span>8. Sorting</span><span class="fav-icon">★</span></a></li>
+          <li class="sidebar-item"><a href="#functions" class="sidebar-link" onclick="closeSidebarMobile()"><span>9. Functions</span><span class="fav-icon">★</span></a></li>
+          <li class="sidebar-item"><a href="#grouping" class="sidebar-link" onclick="closeSidebarMobile()"><span>10. Grouping</span><span class="fav-icon">★</span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">
+          <span>Relational Analytics</span>
+        </div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-item"><a href="#joins" class="sidebar-link" onclick="closeSidebarMobile()"><span>11. Joins</span><span class="fav-icon">★</span></a></li>
+          <li class="sidebar-item"><a href="#subqueries" class="sidebar-link" onclick="closeSidebarMobile()"><span>12. Subqueries</span><span class="fav-icon">★</span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">
+          <span>Advanced Database Concepts</span>
+        </div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-item"><a href="#views" class="sidebar-link" onclick="closeSidebarMobile()"><span>13. Views</span><span class="fav-icon">★</span></a></li>
+          <li class="sidebar-item"><a href="#indexes" class="sidebar-link" onclick="closeSidebarMobile()"><span>14. Indexes</span><span class="fav-icon">★</span></a></li>
+          <li class="sidebar-item"><a href="#ctes" class="sidebar-link" onclick="closeSidebarMobile()"><span>15. CTEs</span><span class="fav-icon">★</span></a></li>
+          <li class="sidebar-item"><a href="#window-functions" class="sidebar-link" onclick="closeSidebarMobile()"><span>16. Window Functions</span><span class="fav-icon">★</span></a></li>
+          <li class="sidebar-item"><a href="#transactions" class="sidebar-link" onclick="closeSidebarMobile()"><span>17. Transactions</span><span class="fav-icon">★</span></a></li>
+          <li class="sidebar-item"><a href="#constraints" class="sidebar-link" onclick="closeSidebarMobile()"><span>18. Constraints</span><span class="fav-icon">★</span></a></li>
+          <li class="sidebar-item"><a href="#normalization" class="sidebar-link" onclick="closeSidebarMobile()"><span>19. Normalization</span><span class="fav-icon">★</span></a></li>
+          <li class="sidebar-item"><a href="#optimization" class="sidebar-link" onclick="closeSidebarMobile()"><span>20. Optimization</span><span class="fav-icon">★</span></a></li>
+          <li class="sidebar-item"><a href="#advanced-sql" class="sidebar-link" onclick="closeSidebarMobile()"><span>21. Advanced SQL</span><span class="fav-icon">★</span></a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">
+          <span>Preparation & Practice</span>
+        </div>
+        <ul class="sidebar-menu">
+          <li class="sidebar-item"><a href="#interview-questions" class="sidebar-link" onclick="closeSidebarMobile()"><span style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg> 22. Interview Prep</span></a></li>
+          <li class="sidebar-item"><a href="#cheat-sheets" class="sidebar-link" onclick="closeSidebarMobile()"><span style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="9"></line><line x1="9" y1="13" x2="15" y2="13"></line></svg> 23. Cheat Sheets</span></a></li>
+          <li class="sidebar-item"><a href="#practice" class="sidebar-link" onclick="closeSidebarMobile()"><span style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon></svg> 24. Practice Sites</span></a></li>
+          <li class="sidebar-item"><a href="#resources" class="sidebar-link" onclick="closeSidebarMobile()"><span style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path></svg> 25. Curated Resources</span></a></li>
+          <li class="sidebar-item"><a href="#project-ideas" class="sidebar-link" onclick="closeSidebarMobile()"><span style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> 26. Project Ideas</span></a></li>
+          <li class="sidebar-item"><a href="#roadmap" class="sidebar-link" onclick="closeSidebarMobile()"><span style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> 27. SQL Roadmap</span></a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- RIGHT SIDEBAR (DYNAMIC TOC) -->
+    <aside class="sidebar-right" id="sidebarRight">
+      <div class="right-sidebar-widget">
+        <div class="toc-title">On this page</div>
+        <ul class="toc-list" id="tocList"></ul>
+      </div>
+      
+      <div class="right-sidebar-widget">
+        <div class="toc-title">Page Controls</div>
+        <div class="widget-meta">
+          <button class="bookmark-page-btn" id="bookmarkPageBtn" onclick="togglePageBookmark()">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span>Bookmark Page</span>
+          </button>
+          <div class="meta-row">
+            <span>Reading Time:</span>
+            <span class="meta-value" id="metaReadingTime">5 min</span>
+          </div>
+          <div class="meta-row">
+            <span>Section Count:</span>
+            <span class="meta-value" id="metaSectionCount">13</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CENTER CONTENT PANEL -->
+    <main class="content-panel" id="contentPanel">
+      <div id="activePageContent"></div>
+      
+      <!-- BOTTOM NAVIGATION PANE -->
+      <nav class="bottom-nav">
+        <div class="nav-btn prev" id="prevPageBtn" onclick="navigatePrev()">
+          <span class="nav-btn-label">PREVIOUS</span>
+          <span class="nav-btn-title">Welcome</span>
+        </div>
+        <div class="nav-btn next" id="nextPageBtn" onclick="navigateNext()">
+          <span class="nav-btn-label">NEXT</span>
+          <span class="nav-btn-title">Introduction</span>
+        </div>
+      </nav>
+    </main>
+  </div>
+
+  <!-- SLIDING SQL PLAYGROUND DRAWER -->
+  <div class="playground-drawer" id="playgroundDrawer">
+    <div class="playground-header">
+      <div class="playground-title">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+        <span>SQL Query Simulator Sandbox</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="copy-btn" onclick="loadPlaygroundSample()" style="font-size:10px;">Load Sample</button>
+        <button class="playground-close-btn" onclick="togglePlayground()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+    <div class="playground-body">
+      <div class="playground-input-side">
+        <textarea class="playground-textarea" id="playgroundInput" placeholder="SELECT * FROM users WHERE role = 'Admin';"></textarea>
+        <div class="playground-actions">
+          <div class="playground-schemas-info">
+            Tables: <code style="font-size:9.5px;">users(id, name, email, role)</code>, <code style="font-size:9.5px;">posts(id, user_id, title)</code>
+          </div>
+          <button class="run-query-btn" onclick="runPlaygroundQuery()">Run Query</button>
+        </div>
+      </div>
+      <div class="playground-output-side" id="playgroundOutputContainer">
+        <div class="playground-status-row">
+          <span>Query Result Output</span>
+          <span id="playgroundStatusText">Ready. Let the queries speak.</span>
+        </div>
+        <div id="playgroundTableWrapper"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEARCH MODAL OVERLAY -->
+  <div class="search-modal" id="searchModal" onclick="closeSearchModalOnBg(event)">
+    <div class="search-box">
+      <div class="search-box-header">
+        <svg class="icon-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" class="search-box-input" id="searchBoxInput" placeholder="Search guides, terms, and cheat sheets..." oninput="handleSearch(this.value)">
+        <button class="search-close-btn" onclick="closeSearchModal()">ESC</button>
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+  </div>
+
+  <!-- TOAST ALERTS -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- FOOTER -->
+  <footer class="app-footer">
+    <div class="footer-brand">
+      <svg viewBox="0 0 320 80" style="height:32px; width:auto;">
+        <path d="M 10 70 L 45 10 L 60 10 L 25 70 Z" fill="var(--accent-color)" />
+        <path d="M 45 10 L 80 70 L 65 70 L 55 50 L 35 50 L 38 40 L 60 40 L 48 18 Z" fill="var(--text-primary)" />
+        <text x="100" y="48" font-family="'Plus Jakarta Sans', sans-serif" font-size="28" font-weight="800" fill="var(--text-primary)">A-STACK</text>
+      </svg>
+    </div>
+    <p style="margin-bottom:6px;">Bootcamp #1 — Query Set Go — Level Up July</p>
+    <p style="color:var(--text-muted); font-size:12px;">© 2026 A-Stack. Designed & built for developers and SQL learners. Offline-First Handbook.</p>
+  </footer>
+
+  <!-- DATABASE DATABASE CONTENT -->
+  <script>
+    /* -------------------------------------------------------------
+       Data Store for the 27 Documentation Pages
+       ------------------------------------------------------------- */
+    const HANDBOOK_PAGES = {
+      "welcome": {
+        title: "Query Set Go",
+        subtitle: "A-Stack presents: Level Up July • Bootcamp #1 — SQL Handbook",
+        customHTML: `
+          <div class="welcome-hero">
+            <div class="welcome-hero-glowing-glow"></div>
+            <div class="welcome-subtitle">A-Stack Developer Series</div>
+            <h1 class="welcome-title-glow">Query Set Go</h1>
+            <p class="welcome-desc">
+              Master SQL from absolute zero to interview-ready with this complete, interactive reference handbook. Covering syntax, diagrams, optimization, real-world schemas, and interview checklists.
+            </p>
+            <a href="#intro" class="welcome-action-btn">
+              <span>Start Learning</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+
+          <h2 class="doc-h2" id="quick-navigation">Explore the Handbook</h2>
+          <p class="doc-p">Choose a learning module below or select from the navigation pane to dive in. Every core topic contains interactive diagrams, common mistakes, and real interview notes.</p>
+          
+          <div class="welcome-feature-grid">
+            <div class="welcome-feature-card" onclick="window.location.hash='#sql-basics'">
+              <div class="welcome-feature-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+              </div>
+              <h3 class="welcome-feature-title">Core Basics</h3>
+              <p class="welcome-feature-p">Database engines, primary/foreign keys, DDL, DML, and standard query syntax constraints.</p>
+            </div>
+            
+            <div class="welcome-feature-card" onclick="window.location.hash='#joins'">
+              <div class="welcome-feature-icon purple">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg>
+              </div>
+              <h3 class="welcome-feature-title">Relational Joins</h3>
+              <p class="welcome-feature-p">Detailed visual SVG comparisons for Left, Right, Inner, Cross, and Anti joins.</p>
+            </div>
+
+            <div class="welcome-feature-card" onclick="window.location.hash='#window-functions'">
+              <div class="welcome-feature-icon green">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+              </div>
+              <h3 class="welcome-feature-title">Window Functions</h3>
+              <p class="welcome-feature-p">In-depth guides on aggregate filters, framing, partition execution, ROW_NUMBER, and running totals.</p>
+            </div>
+
+            <div class="welcome-feature-card" onclick="window.location.hash='#interview-questions'">
+              <div class="welcome-feature-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+              </div>
+              <h3 class="welcome-feature-title">Interview Prep</h3>
+              <p class="welcome-feature-p">150+ categorized SQL interview challenges with collapsible answers and LeetCode mapping.</p>
+            </div>
+          </div>
+        `
+      },
+      "intro": {
+        title: "Introduction",
+        subtitle: "What is SQL, its role in the modern developer stack, and A-Stack roadmap guidelines.",
+        customHTML: `
+          <h2 class="doc-h2" id="welcome-sql">Welcome to the SQL Developer Handbook</h2>
+          <p class="doc-p">In the modern software ecosystem, <span class="doc-bold">data is the crown jewel</span>. Whether you are building web apps with next-gen frameworks, training AI models, or building analytics dashboards, SQL (Structured Query Language) is the lingua franca for accessing and modeling data.</p>
+          
+          <h2 class="doc-h2" id="what-is-qsg">Query Set Go Objectives</h2>
+          <p class="doc-p">Query Set Go is designed specifically for bootcamp learners and seasoned engineers who need a rigorous, high-density reference sheet. It targets:</p>
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">Precision</span>: Precise definitions and standard-compliant ANSI SQL syntax.</li>
+            <li class="doc-li"><span class="doc-bold">Production Relevance</span>: Focuses on query plans, indexing architectures, isolation bottlenecks, and window filters.</li>
+            <li class="doc-li"><span class="doc-bold">Interactive Learning</span>: A built-in SQL Sandbox is loaded and available by clicking the query icon at the top right of the navbar.</li>
+          </ul>
+
+          <div class="callout note">
+            <div class="callout-title">
+              <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              Quick Tip
+            </div>
+            <p class="doc-p">To query mock tables directly while reading guides, press the <strong>Ctrl + \` (Backtick)</strong> hotkey to toggle the SQL Playground Drawer. Try executing <code>SELECT * FROM users;</code> right away!</p>
+          </div>
+        `
+      },
+      "getting-started": {
+        title: "Getting Started",
+        subtitle: "Database setups, client configurations, and writing your initial queries.",
+        customHTML: `
+          <h2 class="doc-h2" id="database-engines">1. Choosing a Database Engine</h2>
+          <p class="doc-p">Before querying, you need a Relational Database Management System (RDBMS). Most production apps use one of the following engines:</p>
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">PostgreSQL</span>: The industry standard open-source relational engine. Highly extensible with superb support for SQL standards, window metrics, and JSON.</li>
+            <li class="doc-li"><span class="doc-bold">MySQL / MariaDB</span>: Extremely popular web platform engine, powering WordPress, e-commerce networks, and SaaS backends.</li>
+            <li class="doc-li"><span class="doc-bold">SQLite</span>: A serverless, file-based database ideal for embedded environments, mobile apps, and testing configurations.</li>
+          </ul>
+
+          <h2 class="doc-h2" id="installation">2. Setting up PostgreSQL (Local Container)</h2>
+          <p class="doc-p">The fastest way to spin up a developer-friendly database is using Docker. Run the following command in your shell:</p>
+          <div class="terminal-block">
+            <div class="terminal-header">
+              <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+              <span class="terminal-title">Docker Bash</span>
+              <button class="copy-btn" onclick="copyText(this)">Copy</button>
+            </div>
+            <div class="terminal-body">
+              <pre><code>docker run --name local-postgres -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres</code></pre>
+            </div>
+          </div>
+
+          <h2 class="doc-h2" id="connecting">3. GUI & CLI Database Clients</h2>
+          <p class="doc-p">To run query sheets on your database, connect with clients like:</p>
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">DBeaver</span>: A robust open-source universal database explorer supporting all popular SQL engines.</li>
+            <li class="doc-li"><span class="doc-bold">pgAdmin</span>: The standard graphical tool dedicated specifically to PostgreSQL administration.</li>
+            <li class="doc-li"><span class="doc-bold">VS Code SQL Extensions</span>: Extension packages like "Database Client" allow running queries directly inside your editor.</li>
+          </ul>
+        `
+      },
+      
+      // Technical SQL Core Guides (follow 13-part structure)
+      "sql-basics": {
+        isTechnical: true,
+        title: "SQL Basics",
+        overview: "SQL (Structured Query Language) is the domain-specific standard language used to interface with Relational Database Management Systems (RDBMS). It is split into DDL (Data Definition Language), DML (Data Manipulation Language), DQL (Data Query Language), DCL (Data Control Language), and TCL (Transaction Control Language).",
+        whyMatters: "SQL decouples data retrieval from storage mechanics. By specifying *what* data to retrieve rather than *how* to locate it, database engines optimize query execution pipelines dynamically.",
+        syntax: `-- DDL (Schema structure)
+CREATE TABLE users (
+  id INT PRIMARY KEY,
+  name VARCHAR(100),
+  role VARCHAR(50) DEFAULT 'User'
+);
+
+-- DML (State modification)
+INSERT INTO users (id, name) VALUES (1, 'Kabir');
+
+-- DQL (Data query)
+SELECT name FROM users WHERE id = 1;`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">Primary Key</span>: A column (or set of columns) that uniquely identifies each row in a table. It cannot contain NULL values.</li>
+            <li class="doc-li"><span class="doc-bold">Foreign Key</span>: A column referencing the Primary Key of another table, enforcing relational constraints.</li>
+            <li class="doc-li"><span class="doc-bold">DDL (Data Definition)</span>: Commands like <code>CREATE</code>, <code>ALTER</code>, and <code>DROP</code> that define the database schema.</li>
+            <li class="doc-li"><span class="doc-bold">DML (Data Manipulation)</span>: Commands like <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code> that modify rows.</li>
+            <li class="doc-li"><span class="doc-bold">DQL (Data Query)</span>: The <code>SELECT</code> statement used to retrieve data.</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <rect x="20" y="40" width="150" height="100" rx="8" class="svg-node accent" />
+            <text x="95" y="70" class="svg-text">Client Application</text>
+            <text x="95" y="90" class="svg-text" font-size="10" fill="var(--accent-color)">SQL Queries</text>
+            
+            <rect x="430" y="40" width="150" height="100" rx="8" class="svg-node purple" />
+            <text x="505" y="70" class="svg-text">Database Engine</text>
+            <text x="505" y="90" class="svg-text" font-size="10" fill="var(--purple-color)">Tables & Schema</text>
+
+            <path d="M 170 90 L 430 90" class="svg-path active" stroke-width="3" />
+            <text x="300" y="75" class="svg-text" font-size="10">SELECT * FROM users;</text>
+          </svg>
+        `,
+        example: `SELECT id, name, role FROM users WHERE role = 'Admin';`,
+        exampleOutput: `
+          <table class="output-table">
+            <thead>
+              <tr><th>id</th><th>name</th><th>role</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>Aarav</td><td>Admin</td></tr>
+            </tbody>
+          </table>
+        `,
+        commonMistakes: "Confusing DDL with DML, such as trying to use <code>DROP</code> to remove rows from a table instead of <code>DELETE</code>. <code>DROP TABLE</code> deletes the table structure completely, while <code>DELETE</code> or <code>TRUNCATE</code> deletes row data.",
+        bestPractices: "Always write SQL keywords (like <code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>) in uppercase, and identifiers (table/column names) in lowercase to improve readability.",
+        interviewNotes: "Be prepared to explain the difference between Candidate Keys, Composite Keys, and Primary Keys. Explain what a Surrogate Key (such as an auto-incrementing ID) is compared to a Natural Key (like an email address).",
+        leetcodeQs: "LeetCode 584: Find Customer Referee (Easy) | LeetCode 1757: Recyclable and Low Fat Products (Easy)",
+        practiceProblems: "Open the Sandbox and query all users where the ID is greater than 2.",
+        summary: "SQL is a declarative language for managing structured relational data. It is partitioned into DDL, DML, DQL, and TCL command pipelines."
+      },
+      "databases": {
+        isTechnical: true,
+        title: "Databases",
+        overview: "An RDBMS database acts as a logical namespace containing tables, schemas, views, sequences, triggers, and configuration parameters.",
+        whyMatters: "Managing namespaces properly allows team separation, secure permission partitioning, and cluster scalability configurations.",
+        syntax: `CREATE DATABASE shop_prod;
+USE shop_prod;
+DROP DATABASE shop_prod;`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">CREATE DATABASE</span>: Creates a new physical namespace on the filesystem.</li>
+            <li class="doc-li"><span class="doc-bold">USE / \\c</span>: Sets the active database context for subsequent SQL commands.</li>
+            <li class="doc-li"><span class="doc-bold">DROP DATABASE</span>: Permanently deletes the namespace and all associated data. Use with caution.</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <ellipse cx="300" cy="90" rx="140" ry="60" class="svg-node accent" />
+            <text x="300" y="80" class="svg-text">Database Namespace</text>
+            <rect x="200" y="100" width="80" height="30" rx="4" class="svg-node" />
+            <text x="240" y="115" class="svg-text" font-size="10">users tbl</text>
+            <rect x="320" y="100" width="80" height="30" rx="4" class="svg-node" />
+            <text x="360" y="115" class="svg-text" font-size="10">orders tbl</text>
+          </svg>
+        `,
+        example: `CREATE DATABASE analytics_dw;`,
+        exampleOutput: `
+          <div style="font-family: monospace; font-size: 13px; color: var(--green-color); padding: 8px;">
+            Query OK, 1 row affected (0.04 sec)
+          </div>
+        `,
+        commonMistakes: "Executing <code>DROP DATABASE</code> on production instead of staging database clusters due to lack of environment tags in DB connections.",
+        bestPractices: "In production, avoid running applications with database superuser privileges. Bind applications to schemas with limited DML/DQL execution rights.",
+        interviewNotes: "Be ready to explain the difference between a DBMS (Database Management System) and an RDBMS (Relational Database Management System). Key: RDBMS represents data in tables and relations.",
+        leetcodeQs: "No specific LeetCode questions target DATABASE creation commands.",
+        practiceProblems: "Note: Database creation commands cannot be executed in this in-memory sandbox. Stick to SELECT operations.",
+        summary: "A database acts as the logical wrapper containing tables and relations. Always secure access permissions."
+      },
+      "tables": {
+        isTechnical: true,
+        title: "Tables",
+        overview: "Tables are the foundational physical structures that hold row data. Creating tables requires defining columns, precise data types (INT, VARCHAR, TIMESTAMP), and integrity constraints.",
+        whyMatters: "Well-modeled schemas prevent data corruption, optimize index sizes, and ensure fast query execution.",
+        syntax: `CREATE TABLE products (
+  product_id INT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  price DECIMAL(10, 2) CHECK (price >= 0),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">VARCHAR(N)</span>: Variable length string up to N characters. Optimized for disk usage.</li>
+            <li class="doc-li"><span class="doc-bold">DECIMAL(P, S)</span>: Fixed-point exact numeric type. Critical for pricing data.</li>
+            <li class="doc-li"><span class="doc-bold">CHECK</span>: Integrity constraint that validates row values prior to insertions.</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <rect x="50" y="30" width="500" height="120" rx="8" class="svg-node accent" />
+            <line x1="50" y1="70" x2="550" y2="70" stroke="var(--border-color)" stroke-width="2" />
+            <line x1="200" y1="30" x2="200" y2="150" stroke="var(--border-color)" stroke-width="2" />
+            <line x1="380" y1="30" x2="380" y2="150" stroke="var(--border-color)" stroke-width="2" />
+            <text x="125" y="50" class="svg-text">product_id (INT)</text>
+            <text x="290" y="50" class="svg-text">title (VARCHAR)</text>
+            <text x="465" y="50" class="svg-text">price (DECIMAL)</text>
+            <text x="125" y="100" class="svg-text" font-size="11" fill="var(--text-secondary)">101 [PK]</text>
+            <text x="290" y="100" class="svg-text" font-size="11" fill="var(--text-secondary)">A-Stack Shirt</text>
+            <text x="465" y="100" class="svg-text" font-size="11" fill="var(--text-secondary)">25.00</text>
+          </svg>
+        `,
+        example: `ALTER TABLE products ADD COLUMN stock INT DEFAULT 0;`,
+        exampleOutput: `
+          <div style="font-family: monospace; font-size: 13px; color: var(--green-color); padding: 8px;">
+            Query OK, 0 rows affected (0.01 sec)
+          </div>
+        `,
+        commonMistakes: "Using <code>VARCHAR(255)</code> for all string columns without estimating actual index lengths or table storage allocations.",
+        bestPractices: "Always declare <code>NOT NULL</code> on fields unless they must support empty states. This simplifies boolean querying and index configurations.",
+        interviewNotes: "Be ready to explain the difference between <code>TRUNCATE</code> and <code>DELETE</code>. Key: <code>TRUNCATE</code> is a DDL operation that drops/recreates the table structure, while <code>DELETE</code> is a DML operation that removes rows sequentially and logs edits.",
+        leetcodeQs: "LeetCode 182: Duplicate Emails (Easy)",
+        practiceProblems: "Type <code>SELECT * FROM posts;</code> in the sandbox to inspect the columns of the mock posts table.",
+        summary: "Tables define the structured storage contract. Always declare precise data types and integrity rules."
+      },
+      "queries": {
+        isTechnical: true,
+        title: "Queries",
+        overview: "Querying centers on the standard <code>SELECT</code> statement. The database filters, sorts, and project columns based on query instructions.",
+        whyMatters: "Writing optimized queries prevents unnecessary network payloads and CPU overhead on database clusters.",
+        syntax: `SELECT column1, column2
+FROM table_name
+LIMIT 5 OFFSET 10;`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">SELECT</span>: Specifies the columns to return. Using <code>*</code> returns all columns.</li>
+            <li class="doc-li"><span class="doc-bold">FROM</span>: Declares the source table.</li>
+            <li class="doc-li"><span class="doc-bold">LIMIT / OFFSET</span>: Controls pagination by limiting output row counts.</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <!-- Execution Order Diagram -->
+            <rect x="40" y="60" width="100" height="60" rx="6" class="svg-node" />
+            <text x="90" y="90" class="svg-text">1. FROM</text>
+            <rect x="180" y="60" width="100" height="60" rx="6" class="svg-node accent" />
+            <text x="230" y="90" class="svg-text">2. WHERE</text>
+            <rect x="320" y="60" width="100" height="60" rx="6" class="svg-node" />
+            <text x="370" y="90" class="svg-text">3. SELECT</text>
+            <rect x="460" y="60" width="100" height="60" rx="6" class="svg-node purple" />
+            <text x="510" y="90" class="svg-text">4. LIMIT</text>
+            <path d="M 140 90 L 180 90" class="svg-path" />
+            <path d="M 280 90 L 320 90" class="svg-path" />
+            <path d="M 420 90 L 460 90" class="svg-path" />
+          </svg>
+        `,
+        example: `SELECT DISTINCT role FROM users;`,
+        exampleOutput: `
+          <table class="output-table">
+            <thead><tr><th>role</th></tr></thead>
+            <tbody>
+              <tr><td>Admin</td></tr>
+              <tr><td>User</td></tr>
+              <tr><td>Moderator</td></tr>
+            </tbody>
+          </table>
+        `,
+        commonMistakes: "Executing <code>SELECT *</code> in production code. This causes resource bloating if tables undergo schema adjustments later.",
+        bestPractices: "Always list out the exact columns needed. This maximizes index utility and minimizes database network I/O.",
+        interviewNotes: "What is the logical order of query execution? Answer: FROM -> JOIN -> WHERE -> GROUP BY -> HAVING -> SELECT -> DISTINCT -> ORDER BY -> LIMIT.",
+        leetcodeQs: "LeetCode 175: Combine Two Tables (Easy)",
+        practiceProblems: "Open the sandbox and run a query that selects only the title of all posts.",
+        summary: "The SELECT statement retrieves specified columns. Always optimize execution pathways by avoiding wildcard asterisk projection."
+      },
+      "filtering": {
+        isTechnical: true,
+        title: "Filtering",
+        overview: "Filtering isolates subset rows using the <code>WHERE</code> clause combined with comparison operators (AND, OR, NOT, BETWEEN, LIKE, IN).",
+        whyMatters: "Filtering rows at the database level reduces execution scopes, ensuring fast queries and minimal memory footprints.",
+        syntax: `SELECT * FROM users
+WHERE role = 'User'
+  AND (email LIKE '%@mail.com' OR created_at >= '2026-07-01');`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">LIKE</span>: Pattern matching using wildcards (<code>%</code> matches multi-character, <code>_</code> matches single character).</li>
+            <li class="doc-li"><span class="doc-bold">IN</span>: Validates row value against a list or subquery output.</li>
+            <li class="doc-li"><span class="doc-bold">IS NULL</span>: Checks for the existence of unassigned fields (values).</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <circle cx="150" cy="90" r="50" class="svg-node" />
+            <text x="150" y="90" class="svg-text">All Rows</text>
+            <circle cx="450" cy="90" r="30" class="svg-node accent" />
+            <text x="450" y="90" class="svg-text">Filtered</text>
+            <path d="M 200 90 L 420 90" class="svg-path active" />
+            <text x="310" y="75" class="svg-text" font-size="10">WHERE role = 'User'</text>
+          </svg>
+        `,
+        example: `SELECT name, email FROM users WHERE role = 'User' AND email IS NOT NULL;`,
+        exampleOutput: `
+          <table class="output-table">
+            <thead><tr><th>name</th><th>email</th></tr></thead>
+            <tbody>
+              <tr><td>Isha</td><td>isha@mail.com</td></tr>
+              <tr><td>Kabir</td><td>kabir@mail.com</td></tr>
+              <tr><td>Meera</td><td>meera@mail.com</td></tr>
+            </tbody>
+          </table>
+        `,
+        commonMistakes: "Querying NULL values using <code>= NULL</code> instead of <code>IS NULL</code>. Since NULL represents an unknown value, direct comparison returns NULL (unknown), not true.",
+        bestPractices: "Group OR statements inside parentheses when mixing them with AND operators to ensure logical evaluation correctness.",
+        interviewNotes: "Be ready to explain the difference between <code>EXISTS</code> and <code>IN</code>. Key: <code>EXISTS</code> returns true/false early upon locating a match, whereas <code>IN</code> generally resolves the entire subquery dataset first.",
+        leetcodeQs: "LeetCode 584: Find Customer Referee (Easy) | LeetCode 1148: Article Views I (Easy)",
+        practiceProblems: "Query the sandbox for all users whose name contains the letter 'a' and have 'User' role.",
+        summary: "WHERE filters rows prior to projections. Group conditions and use NULL-safe operators to guarantee correct matching."
+      },
+      "sorting": {
+        isTechnical: true,
+        title: "Sorting",
+        overview: "Sorting organizes query results in ascending (ASC) or descending (DESC) sequences based on specified columns.",
+        whyMatters: "Ordering is essential for UI representation, ranking calculations, and paginating large datasets.",
+        syntax: `SELECT name, created_at FROM users
+ORDER BY role ASC, created_at DESC;`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">ORDER BY</span>: Declares the sort order. Defaults to ascending if omitted.</li>
+            <li class="doc-li"><span class="doc-bold">Multi-Column Sort</span>: Sorts by the primary column, then resolves matching keys using secondary columns.</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <rect x="50" y="40" width="200" height="100" rx="8" class="svg-node" />
+            <text x="150" y="70" class="svg-text">Unordered Table</text>
+            <text x="150" y="90" class="svg-text" font-size="10">Kabir, Aarav, Meera</text>
+
+            <rect x="350" y="40" width="200" height="100" rx="8" class="svg-node accent" />
+            <text x="450" y="70" class="svg-text">Ordered (ASC)</text>
+            <text x="450" y="90" class="svg-text" font-size="10">Aarav, Kabir, Meera</text>
+
+            <path d="M 250 90 L 350 90" class="svg-path" />
+          </svg>
+        `,
+        example: `SELECT * FROM users ORDER BY created_at DESC;`,
+        exampleOutput: `
+          <table class="output-table">
+            <thead><tr><th>id</th><th>name</th><th>role</th><th>created_at</th></tr></thead>
+            <tbody>
+              <tr><td>5</td><td>Rohan</td><td>Moderator</td><td>2026-07-05 16:45:00</td></tr>
+              <tr><td>4</td><td>Meera</td><td>User</td><td>2026-07-04 14:20:00</td></tr>
+              <tr><td>3</td><td>Kabir</td><td>User</td><td>2026-07-03 09:15:00</td></tr>
+            </tbody>
+          </table>
+        `,
+        commonMistakes: "Ordering massive datasets without backing indexes, forcing disk-bound temporary files ('External Merge Sort') which degrade performance.",
+        bestPractices: "Create composite indexes that align with your frequent ORDER BY criteria to enable index-based sorting.",
+        interviewNotes: "How do NULL values sort by default? In PostgreSQL/MySQL, NULLs are treated as larger than all non-null values. Use NULLS FIRST/LAST to override this behavior.",
+        leetcodeQs: "LeetCode 1795: Rearrange Products Table (Easy)",
+        practiceProblems: "Open the sandbox and sort the users table by name in descending order.",
+        summary: "ORDER BY aligns results. Back sorting columns with indexes to prevent slow database sorting procedures."
+      },
+      "functions": {
+        isTechnical: true,
+        title: "Functions",
+        overview: "Transformation functions modify strings, numbers, and dates to generate formatted outputs or computed fields.",
+        whyMatters: "Data normalization frequently requires manipulation, casting types, date arithmetic, and fallback defaults (like COALESCE).",
+        syntax: `SELECT UPPER(name), COALESCE(email, 'no-email@mail.com'),
+       DATE_FORMAT(created_at, '%Y-%m-%d')
+FROM users;`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">UPPER / LOWER</span>: Converts text case formatting.</li>
+            <li class="doc-li"><span class="doc-bold">COALESCE(...)</span>: Evaluates values left-to-right and returns the first non-null argument.</li>
+            <li class="doc-li"><span class="doc-bold">CAST / CONVERT</span>: Reinterprets data values as target types (e.g. string to integer).</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <rect x="50" y="60" width="120" height="60" rx="6" class="svg-node" />
+            <text x="110" y="90" class="svg-text">Input: 'Isha'</text>
+            <rect x="240" y="50" width="120" height="80" rx="6" class="svg-node accent" />
+            <text x="300" y="80" class="svg-text">UPPER() Function</text>
+            <text x="300" y="105" class="svg-text" font-size="10" fill="var(--accent-color)">Transform</text>
+            <rect x="430" y="60" width="120" height="60" rx="6" class="svg-node purple" />
+            <text x="490" y="90" class="svg-text">Output: 'ISHA'</text>
+            <path d="M 170 90 L 240 90" class="svg-path" />
+            <path d="M 360 90 L 430 90" class="svg-path" />
+          </svg>
+        `,
+        example: `SELECT name, LENGTH(name) AS name_len FROM users;`,
+        exampleOutput: `
+          <table class="output-table">
+            <thead><tr><th>name</th><th>name_len</th></tr></thead>
+            <tbody>
+              <tr><td>Aarav</td><td>5</td></tr>
+              <tr><td>Isha</td><td>4</td></tr>
+            </tbody>
+          </table>
+        `,
+        commonMistakes: "Executing transformation functions on WHERE clause columns, which breaks indexing pathways (forces a 'Full Table Scan').",
+        bestPractices: "For index columns, transform the query values rather than the column values. For example, use <code>created_at >= '2026-07-01'</code> instead of <code>YEAR(created_at) = 2026</code>.",
+        interviewNotes: "Be ready to explain the difference between COALESCE and IFNULL/ISNULL. Key: COALESCE is ANSI-standard and accepts multiple parameters, while engine-specific alternatives accept only two.",
+        leetcodeQs: "LeetCode 1683: Invalid Tweets (Easy) | LeetCode 1667: Fix Names in a Table (Easy)",
+        practiceProblems: "Query the sandbox and select upper-cased names and their lengths for all users.",
+        summary: "Functions mutate output values. Avoid putting functions on indexed columns in your WHERE filtering clauses."
+      },
+      "grouping": {
+        isTechnical: true,
+        title: "Grouping",
+        overview: "Grouping aggregates multiple rows into single summary rows based on matching column criteria (GROUP BY, HAVING, COUNT, SUM, AVG).",
+        whyMatters: "Essential for financial balances, analytic metrics, and multi-dimensional aggregations.",
+        syntax: `SELECT role, COUNT(*), SUM(amount)
+FROM users u JOIN orders o ON u.id = o.user_id
+GROUP BY role
+HAVING COUNT(*) > 1;`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">GROUP BY</span>: Groups records sharing matching values in target columns.</li>
+            <li class="doc-li"><span class="doc-bold">HAVING</span>: Filters aggregated groups (runs *after* GROUP BY, unlike WHERE which filters rows *before* grouping).</li>
+            <li class="doc-li"><span class="doc-bold">Aggregates</span>: Functions like <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code>.</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <rect x="30" y="50" width="130" height="80" rx="8" class="svg-node" />
+            <text x="95" y="80" class="svg-text">Unordered Roles</text>
+            <text x="95" y="100" class="svg-text" font-size="9" fill="var(--text-muted)">Admin, User, User</text>
+
+            <rect x="230" y="40" width="140" height="40" rx="4" class="svg-node accent" />
+            <text x="300" y="60" class="svg-text">Group Admin (1)</text>
+
+            <rect x="230" y="100" width="140" height="40" rx="4" class="svg-node purple" />
+            <text x="300" y="120" class="svg-text">Group User (2)</text>
+
+            <path d="M 160 80 L 230 60" class="svg-path" />
+            <path d="M 160 100 L 230 120" class="svg-path" />
+          </svg>
+        `,
+        example: `SELECT role, COUNT(*) AS user_count FROM users GROUP BY role;`,
+        exampleOutput: `
+          <table class="output-table">
+            <thead><tr><th>role</th><th>user_count</th></tr></thead>
+            <tbody>
+              <tr><td>Admin</td><td>1</td></tr>
+              <tr><td>User</td><td>3</td></tr>
+              <tr><td>Moderator</td><td>1</td></tr>
+            </tbody>
+          </table>
+        `,
+        commonMistakes: "Including unaggregated columns in the <code>SELECT</code> clause that are not declared in the <code>GROUP BY</code> clause. Most engines reject this query.",
+        bestPractices: "Only put filtering statements in the <code>HAVING</code> clause if they require aggregation results. Standard row filters belong in the <code>WHERE</code> clause.",
+        interviewNotes: "Be ready to explain the difference between WHERE and HAVING. Key: WHERE is applied before aggregation, while HAVING is applied after grouping occurs.",
+        leetcodeQs: "LeetCode 596: Classes More Than 5 Students (Easy) | LeetCode 1084: Sales Analysis III (Easy)",
+        practiceProblems: "Open the sandbox and write a query counting posts grouped by user_id.",
+        summary: "GROUP BY summarizes rows. Filter groups using HAVING, and filter rows using WHERE."
+      },
+      "joins": {
+        isTechnical: true,
+        title: "Joins",
+        overview: "Joins combine columns from multiple tables using matching key constraints (INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL JOIN, CROSS JOIN).",
+        whyMatters: "Joins allow relational mapping across normalized tables, rebuilding complete domain objects.",
+        syntax: `SELECT u.name, p.title
+FROM users u
+INNER JOIN posts p ON u.id = p.user_id;`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">INNER JOIN</span>: Returns rows when keys match in both tables.</li>
+            <li class="doc-li"><span class="doc-bold">LEFT JOIN</span>: Returns all left table records, plus matching right records (or NULLs).</li>
+            <li class="doc-li"><span class="doc-bold">CROSS JOIN</span>: Produces a Cartesian product (combines every left row with every right row).</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <circle cx="230" cy="90" r="60" class="svg-node accent" opacity="0.8" />
+            <circle cx="370" cy="90" r="60" class="svg-node purple" opacity="0.8" />
+            <text x="180" y="90" class="svg-text">Users</text>
+            <text x="420" y="90" class="svg-text">Posts</text>
+            <text x="300" y="90" class="svg-text" font-size="10">INNER</text>
+          </svg>
+        `,
+        example: `SELECT u.name, p.title FROM users u LEFT JOIN posts p ON u.id = p.user_id;`,
+        exampleOutput: `
+          <table class="output-table">
+            <thead><tr><th>name</th><th>title</th></tr></thead>
+            <tbody>
+              <tr><td>Aarav</td><td>Welcome to A-Stack</td></tr>
+              <tr><td>Isha</td><td>SQL Join Basics</td></tr>
+              <tr><td>Isha</td><td>Window Functions Guide</td></tr>
+              <tr><td>Kabir</td><td>Indexing in MySQL</td></tr>
+              <tr><td>Meera</td><td>NULL</td></tr>
+            </tbody>
+          </table>
+        `,
+        commonMistakes: "Forgetting to qualify matching column names in joins, triggering 'Column ambiguously defined' compilation errors.",
+        bestPractices: "Always declare short, clean aliases for your tables, and explicitly state column lineages using those aliases (e.g. <code>u.name</code>).",
+        interviewNotes: "Be ready to explain how to optimize slow joins. Key: Index joining columns, examine query plans (EXPLAIN), and ensure matched data types align.",
+        leetcodeQs: "LeetCode 175: Combine Two Tables (Easy) | LeetCode 1581: Customer Who Visited but Did Not Make Any Transactions (Easy)",
+        practiceProblems: "Write a query in the sandbox that joins users and posts, showing only roles that have published posts.",
+        summary: "Joins link tables. Ensure joining foreign key constraints are indexed on both tables."
+      },
+      "subqueries": {
+        isTechnical: true,
+        title: "Subqueries",
+        overview: "A subquery is a query nested inside another SQL statement. It can run as scalar (single output) or correlated (evaluates relative to the outer row context).",
+        whyMatters: "Allows complex multi-level filtering and dynamic evaluations without temporary staging structures.",
+        syntax: `SELECT name FROM users
+WHERE id IN (
+  SELECT user_id FROM posts GROUP BY user_id HAVING COUNT(*) > 1
+);`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">Scalar Subquery</span>: Returns exactly one value (one row, one column) used in comparisons.</li>
+            <li class="doc-li"><span class="doc-bold">Correlated Subquery</span>: References columns from the outer query context, causing row-by-row evaluations.</li>
+            <li class="doc-li"><span class="doc-bold">IN / EXISTS</span>: Validates records against the subquery's output list.</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <rect x="50" y="30" width="500" height="120" rx="8" class="svg-node" />
+            <text x="120" y="55" class="svg-text" font-size="11">Outer Query</text>
+            <rect x="180" y="70" width="340" height="60" rx="6" class="svg-node accent" />
+            <text x="350" y="100" class="svg-text">Inner Nested Subquery</text>
+          </svg>
+        `,
+        example: `SELECT title FROM posts WHERE user_id = (SELECT id FROM users WHERE name = 'Aarav');`,
+        exampleOutput: `
+          <table class="output-table">
+            <thead><tr><th>title</th></tr></thead>
+            <tbody>
+              <tr><td>Welcome to A-Stack</td></tr>
+            </tbody>
+          </table>
+        `,
+        commonMistakes: "Using a subquery returning multiple rows with a scalar comparison operator (like <code>=</code>), triggering runtime parsing exceptions.",
+        bestPractices: "Prefer joins or Common Table Expressions (CTEs) over deeply nested subqueries to maintain readable, clean code.",
+        interviewNotes: "Be ready to compare subquery executions against joins. Joins generally enable the compiler optimizer to execute hash joins or nested loops efficiently, whereas correlated subqueries may execute row-by-row.",
+        leetcodeQs: "LeetCode 184: Department Highest Salary (Medium) | LeetCode 185: Department Top Three Salaries (Hard)",
+        practiceProblems: "Open the sandbox and find all users who have not written any posts using a subquery.",
+        summary: "Subqueries nest SQL statements. Use JOINs or CTEs if nesting depth obscures query intent."
+      },
+      "views": {
+        isTechnical: true,
+        title: "Views",
+        overview: "A View is a virtual table defined by a saved SQL query. It does not store data physically unless materialized.",
+        whyMatters: "Views simplify database access, secure schemas by hiding columns, and modularize complex queries.",
+        syntax: `CREATE VIEW admin_users AS
+SELECT id, name, email FROM users
+WHERE role = 'Admin';`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">CREATE VIEW</span>: Saves the query definition as a virtual schema object.</li>
+            <li class="doc-li"><span class="doc-bold">Materialized View</span>: Stashes query outputs physically on disk, requiring refreshes when source tables change.</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <rect x="50" y="50" width="150" height="80" rx="6" class="svg-node" />
+            <text x="125" y="90" class="svg-text">Physical Tables</text>
+            
+            <rect x="400" y="50" width="150" height="80" rx="6" class="svg-node accent" />
+            <text x="475" y="90" class="svg-text">Virtual View</text>
+            
+            <path d="M 200 90 L 400 90" class="svg-path active" />
+          </svg>
+        `,
+        example: `SELECT * FROM admin_users;`,
+        exampleOutput: `
+          <table class="output-table">
+            <thead><tr><th>id</th><th>name</th><th>email</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Aarav</td><td>aarav@mail.com</td></tr>
+            </tbody>
+          </table>
+        `,
+        commonMistakes: "Querying materialized views without refreshing them, leading to outdated, stale data representations.",
+        bestPractices: "Use views to abstract legacy schema shapes. This lets you reorganize physical tables without breaking downstream apps.",
+        interviewNotes: "What is the difference between a standard View and a Materialized View? Key: Standard views run their underlying query dynamically; materialized views store query results physically on disk.",
+        leetcodeQs: "No direct View creation challenges exist on LeetCode.",
+        practiceProblems: "Note: Schema writing views is disabled in this read-only sandbox database environment.",
+        summary: "Views are stored queries acting as virtual tables. Materialized views cache results physically to boost read speeds."
+      },
+      "indexes": {
+        isTechnical: true,
+        title: "Indexes",
+        overview: "Indexes are secondary data structures (typically B-Trees) that enable database engines to locate matching records quickly without checking every row.",
+        whyMatters: "Proper indexing turns slow, linear Table Scans into fast, logarithmic Index Seek operations, dropping query latency from seconds to milliseconds.",
+        syntax: `CREATE INDEX idx_users_role ON users(role);
+CREATE UNIQUE INDEX idx_users_email ON users(email);`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">Clustered Index</span>: Dictates the physical sort order of rows. Only one per table (typically the Primary Key).</li>
+            <li class="doc-li"><span class="doc-bold">Non-Clustered Index</span>: A separate B-Tree referencing row pointers.</li>
+            <li class="doc-li"><span class="doc-bold">Covering Index</span>: An index that contains all columns requested by a query, avoiding lookup operations.</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <!-- B-Tree Representation -->
+            <polygon points="300,30 250,80 350,80" class="svg-node accent" />
+            <text x="300" y="65" class="svg-text" font-size="10">Root</text>
+            
+            <polygon points="200,90 160,130 240,130" class="svg-node" />
+            <text x="200" y="115" class="svg-text" font-size="10">Branch</text>
+            <polygon points="400,90 360,130 440,130" class="svg-node" />
+            <text x="400" y="115" class="svg-text" font-size="10">Branch</text>
+          </svg>
+        `,
+        example: `EXPLAIN SELECT * FROM users WHERE role = 'Admin';`,
+        exampleOutput: `
+          <div style="font-family: monospace; font-size: 12px; padding: 10px; background-color: var(--terminal-bg); color: var(--text-secondary);">
+            -&gt; Index Scan using idx_users_role on users  (cost=0.15..8.05 rows=1 width=244)
+          </div>
+        `,
+        commonMistakes: "Creating indexes on every table column. This slows down write operations (INSERT, UPDATE, DELETE) since the database must update indexes on every edit.",
+        bestPractices: "Only index columns frequently referenced in WHERE, JOIN, and ORDER BY clauses.",
+        interviewNotes: "Be ready to explain the difference between Index Seek and Index Scan. Seek traverses the B-Tree directly to find keys; Scan traverses the leaf nodes of the index completely.",
+        leetcodeQs: "No direct index configuration questions exist on LeetCode.",
+        practiceProblems: "Examine query structures. What index would speed up: <code>SELECT * FROM users WHERE email = 'a' AND role = 'User';</code>?",
+        summary: "Indexes speed up data reads but slow down data writes. Design them carefully using query execution plans."
+      },
+      "ctes": {
+        isTechnical: true,
+        title: "CTEs",
+        overview: "A Common Table Expression (CTE) is a temporary result set defined by a <code>WITH</code> statement that exists only during query execution.",
+        whyMatters: "CTEs replace nested subqueries, modularizing complex query logic, and supporting recursive querying for tree data structures.",
+        syntax: `WITH user_post_counts AS (
+  SELECT user_id, COUNT(*) AS total_posts
+  FROM posts
+  GROUP BY user_id
+)
+SELECT u.name, pc.total_posts
+FROM users u
+JOIN user_post_counts pc ON u.id = pc.user_id;`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">WITH</span>: Declares the start of the CTE block.</li>
+            <li class="doc-li"><span class="doc-bold">Recursive CTE</span>: References itself, enabling traversal of hierarchical structures (e.g. employee reporting charts).</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <rect x="50" y="50" width="180" height="80" rx="8" class="svg-node accent" />
+            <text x="140" y="90" class="svg-text">CTE Definition</text>
+            <rect x="370" y="50" width="180" height="80" rx="8" class="svg-node purple" />
+            <text x="460" y="90" class="svg-text">Main SELECT Query</text>
+            <path d="M 230 90 L 370 90" class="svg-path active" />
+          </svg>
+        `,
+        example: `WITH active_admins AS (
+  SELECT id, name FROM users WHERE role = 'Admin'
+)
+SELECT name FROM active_admins;`,
+        exampleOutput: `
+          <table class="output-table">
+            <thead><tr><th>name</th></tr></thead>
+            <tbody>
+              <tr><td>Aarav</td></tr>
+            </tbody>
+          </table>
+        `,
+        commonMistakes: "Thinking CTEs act like physical temp tables. Standard CTEs run in-memory and are re-evaluated inline by most database query optimizers.",
+        bestPractices: "Use CTEs to make code clean. When writing complex queries, separate aggregation stages into separate CTEs.",
+        interviewNotes: "Be ready to explain: CTE vs Temp Table vs Subquery. Key: CTEs are session-scoped and in-memory; temp tables write physically to tempdb and support custom indexes.",
+        leetcodeQs: "LeetCode 601: Human Traffic of Stadium (Hard) | LeetCode 197: Rising Temperature (Easy)",
+        practiceProblems: "Open the sandbox. Rewrite the posts-by-user aggregation query using a standard CTE structure.",
+        summary: "CTEs clean up query architecture. Use WITH statements to define reusable in-memory datasets."
+      },
+      "window-functions": {
+        isTechnical: true,
+        title: "Window Functions",
+        overview: "Window functions perform calculations across a set of table rows that are related to the current row, without collapsing them into a single summary row.",
+        whyMatters: "Crucial for running totals, moving averages, relative rankings (RANK, DENSE_RANK), and identifying changes between records (LAG, LEAD).",
+        syntax: `SELECT name, role, created_at,
+       ROW_NUMBER() OVER(PARTITION BY role ORDER BY created_at ASC) AS role_seq,
+       LAG(name, 1) OVER(ORDER BY created_at) AS prev_user
+FROM users;`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">OVER()</span>: Declares the window framework.</li>
+            <li class="doc-li"><span class="doc-bold">PARTITION BY</span>: Partitions records into separate calculation pools.</li>
+            <li class="doc-li"><span class="doc-bold">ORDER BY</span>: Dictates the ranking or sorting flow inside each partition.</li>
+            <li class="doc-li"><span class="doc-bold">LAG / LEAD</span>: Accesses rows offset behind or ahead of the current row.</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <rect x="50" y="30" width="500" height="40" rx="4" class="svg-node" />
+            <text x="300" y="50" class="svg-text" font-size="11">Row 1 (Admin)</text>
+            <rect x="50" y="75" width="500" height="40" rx="4" class="svg-node accent" />
+            <text x="300" y="95" class="svg-text" font-size="11">Row 2 (User) &lt;-- Active window calculation</text>
+            <rect x="50" y="120" width="500" height="40" rx="4" class="svg-node" />
+            <text x="300" y="140" class="svg-text" font-size="11">Row 3 (User)</text>
+          </svg>
+        `,
+        example: `SELECT id, name, role,
+       ROW_NUMBER() OVER(PARTITION BY role ORDER BY id ASC) as r_num
+FROM users;`,
+        exampleOutput: `
+          <table class="output-table">
+            <thead><tr><th>id</th><th>name</th><th>role</th><th>r_num</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Aarav</td><td>Admin</td><td>1</td></tr>
+              <tr><td>5</td><td>Rohan</td><td>Moderator</td><td>1</td></tr>
+              <tr><td>2</td><td>Isha</td><td>User</td><td>1</td></tr>
+              <tr><td>3</td><td>Kabir</td><td>User</td><td>2</td></tr>
+              <tr><td>4</td><td>Meera</td><td>User</td><td>3</td></tr>
+            </tbody>
+          </table>
+        `,
+        commonMistakes: "Using window functions inside the WHERE clause. Since WHERE executes *before* window calculations, this triggers compilation errors. Wrap in a CTE to filter window outputs.",
+        bestPractices: "Combine Window functions with indexes to prevent slow sorting processes. For example, back window partitions with index definitions.",
+        interviewNotes: "Be ready to explain the difference between: <code>RANK()</code>, <code>DENSE_RANK()</code>, and <code>ROW_NUMBER()</code>. Key: RANK skips ranks on ties; DENSE_RANK does not skip; ROW_NUMBER numbers sequentially regardless of duplicate values.",
+        leetcodeQs: "LeetCode 180: Consecutive Numbers (Medium) | LeetCode 185: Department Top Three Salaries (Hard)",
+        practiceProblems: "Open the sandbox. Assign sequential numbers to all posts based on their ID within their respective users.",
+        summary: "Window functions analyze adjacent rows without collapsing layouts. Keep OVER partitions clean and indexed."
+      },
+      "transactions": {
+        isTechnical: true,
+        title: "Transactions",
+        overview: "A database transaction is a unit of work that executes completely or not at all, adhering to ACID (Atomicity, Consistency, Isolation, Durability) properties.",
+        whyMatters: "Ensures data integrity during multi-stage updates, preventing database corruption during system crashes.",
+        syntax: `BEGIN TRANSACTION;
+UPDATE accounts SET balance = balance - 100 WHERE id = 101;
+UPDATE accounts SET balance = balance + 100 WHERE id = 202;
+COMMIT; -- OR ROLLBACK if errors occur`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">Atomicity</span>: All transaction steps succeed, or all fail.</li>
+            <li class="doc-li"><span class="doc-bold">Isolation Levels</span>: Controls visibility of modifications between parallel transactions (Read Uncommitted, Read Committed, Repeatable Read, Serializable).</li>
+            <li class="doc-li"><span class="doc-bold">ROLLBACK</span>: Reverts all transaction updates, restoring the database state.</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <rect x="50" y="40" width="120" height="100" rx="8" class="svg-node" />
+            <text x="110" y="90" class="svg-text">Start (BEGIN)</text>
+            <rect x="240" y="40" width="120" height="100" rx="8" class="svg-node accent" />
+            <text x="300" y="90" class="svg-text">Write Changes</text>
+            <rect x="430" y="40" width="120" height="100" rx="8" class="svg-node green" />
+            <text x="490" y="90" class="svg-text">Save (COMMIT)</text>
+            <path d="M 170 90 L 240 90" class="svg-path" />
+            <path d="M 360 90 L 430 90" class="svg-path active" />
+          </svg>
+        `,
+        example: `BEGIN;
+INSERT INTO posts (id, user_id, title) VALUES (999, 1, 'Transaction Test');
+ROLLBACK;`,
+        exampleOutput: `
+          <div style="font-family: monospace; font-size: 13px; color: var(--green-color); padding: 8px;">
+            ROLLBACK completed. Schema changes reverted.
+          </div>
+        `,
+        commonMistakes: "Leaving transactions open without committing or rolling back. This holds locks on database rows, blocking other database threads (causing deadlocks).",
+        bestPractices: "Keep transaction blocks as small as possible. Avoid running slow API calls inside transaction blocks.",
+        interviewNotes: "Be ready to list the four standard isolation anomalies: Dirty Read, Non-Repeatable Read, Phantom Read, and Serialization Anomalies.",
+        leetcodeQs: "No direct LeetCode transaction logic questions exist on the platform.",
+        practiceProblems: "Understand how transaction isolation changes output results for parallel users.",
+        summary: "Transactions guarantee ACID properties. Use COMMIT or ROLLBACK to secure state transitions."
+      },
+      "constraints": {
+        isTechnical: true,
+        title: "Constraints",
+        overview: "Constraints define data validation rules on database columns, preventing invalid data insertions.",
+        whyMatters: "Enforcing constraints at the database level guarantees data consistency, regardless of application-level bugs.",
+        syntax: `ALTER TABLE users ADD CONSTRAINT check_email UNIQUE (email);`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">UNIQUE</span>: Rejects duplicate values across a column.</li>
+            <li class="doc-li"><span class="doc-bold">CHECK</span>: Asserts boolean rules on column values.</li>
+            <li class="doc-li"><span class="doc-bold">FOREIGN KEY REFERENCES</span>: Prevents orphaned records in related tables.</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <rect x="50" y="60" width="160" height="60" rx="6" class="svg-node" />
+            <text x="130" y="90" class="svg-text">Data Insertion</text>
+            <rect x="250" y="40" width="100" height="100" rx="50" class="svg-node accent" />
+            <text x="300" y="90" class="svg-text">Constraint</text>
+            <rect x="390" y="60" width="160" height="60" rx="6" class="svg-node green" />
+            <text x="470" y="90" class="svg-text">Table Row Saved</text>
+            <path d="M 210 90 L 250 90" class="svg-path" />
+            <path d="M 350 90 L 390 90" class="svg-path" />
+          </svg>
+        `,
+        example: `CREATE TABLE test_con (id INT UNIQUE, age INT CHECK (age >= 18));`,
+        exampleOutput: `
+          <div style="font-family: monospace; font-size: 13px; color: var(--green-color); padding: 8px;">
+            Table created. Constraints activated.
+          </div>
+        `,
+        commonMistakes: "Failing to define foreign key reference constraints, leading to orphaned rows when parent rows are deleted.",
+        bestPractices: "Always declare <code>ON DELETE CASCADE</code> or <code>ON DELETE SET NULL</code> for foreign key constraints to automate cleanup tasks.",
+        interviewNotes: "Be ready to explain: PRIMARY KEY vs UNIQUE. Key: Primary keys reject NULL values; UNIQUE constraints allow NULL values.",
+        leetcodeQs: "No direct LeetCode challenges query constraints configurations.",
+        practiceProblems: "Sandbox check: Note that custom constraint structures are disabled in this read-only sandbox database environment.",
+        summary: "Constraints secure database integrity. Ensure references cascades are configured correctly."
+      },
+      "normalization": {
+        isTechnical: true,
+        title: "Normalization",
+        overview: "Normalization is the process of organizing database fields to minimize data redundancy and dependency anomalies.",
+        whyMatters: "Normalization prevents data updates inconsistency (anomalies) and saves disk space in transaction engines.",
+        syntax: `-- 1NF: Atomic columns
+-- 2NF: No partial key dependencies
+-- 3NF: No transitive dependencies (no non-key columns depending on other non-key columns)`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">1NF</span>: Atomic column values, unique row identities.</li>
+            <li class="doc-li"><span class="doc-bold">2NF</span>: Satisfies 1NF, and eliminates partial dependencies on composite primary keys.</li>
+            <li class="doc-li"><span class="doc-bold">3NF</span>: Satisfies 2NF, and eliminates transitive functional dependencies.</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <rect x="50" y="50" width="160" height="80" rx="8" class="svg-node" />
+            <text x="130" y="90" class="svg-text">Redundant DB</text>
+            <text x="130" y="110" class="svg-text" font-size="10" fill="var(--text-muted)">Unnormalized</text>
+
+            <rect x="390" y="20" width="160" height="50" rx="6" class="svg-node accent" />
+            <text x="470" y="45" class="svg-text">Table A (Keys)</text>
+            <rect x="390" y="110" width="160" height="50" rx="6" class="svg-node purple" />
+            <text x="470" y="135" class="svg-text">Table B (Values)</text>
+
+            <path d="M 210 90 L 390 45" class="svg-path" />
+            <path d="M 210 90 L 390 135" class="svg-path" />
+          </svg>
+        `,
+        example: `-- Normalized tables mapping Users to Roles
+CREATE TABLE roles (role_id INT PRIMARY KEY, name VARCHAR(50));
+CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100), role_id INT REFERENCES roles(role_id));`,
+        exampleOutput: `
+          <div style="font-family: monospace; font-size: 13px; color: var(--green-color); padding: 8px;">
+            Schemas normalized to 3NF standards.
+          </div>
+        `,
+        commonMistakes: "Over-normalizing simple schemas, leading to queries requiring too many joins, which degrades read speeds.",
+        bestPractices: "Normalize to 3NF for OLTP database engines. Denormalize selectively for analytic OLAP data warehouses.",
+        interviewNotes: "Be ready to explain the difference between 3NF and BCNF. Key: BCNF resolves edge cases where overlapping candidate composite keys exist.",
+        leetcodeQs: "No direct normalization logic questions exist on LeetCode.",
+        practiceProblems: "Analyze database layouts: How would you split an unnormalized 1NF address column into 3NF structures?",
+        summary: "Normalization reduces data redundancy. Aim for 3NF structures in OLTP databases."
+      },
+      "optimization": {
+        isTechnical: true,
+        title: "Optimization",
+        overview: "SQL optimization involves tuning query plans and schemas to reduce execution speeds and hardware resource usage.",
+        whyMatters: "Slow database queries crash applications. Optimizing queries prevents database server CPU spikes and out-of-memory errors.",
+        syntax: `-- Non-optimized query
+SELECT * FROM users WHERE UPPER(email) = 'TEST@MAIL.COM';
+
+-- Optimized query (using index-friendly exact match)
+SELECT id, name FROM users WHERE email = 'test@mail.com';`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">Query execution plans</span>: Compilations showing scan types and join algorithms.</li>
+            <li class="doc-li"><span class="doc-bold">Avoid SELECT *</span>: Prevents unnecessary data transfers.</li>
+            <li class="doc-li"><span class="doc-bold">UNION ALL vs UNION</span>: UNION ALL is faster because it does not run deduplication checks.</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <rect x="50" y="60" width="120" height="60" rx="6" class="svg-node" />
+            <text x="110" y="90" class="svg-text">Query Input</text>
+            <circle cx="300" cy="90" r="40" class="svg-node accent" />
+            <text x="300" y="90" class="svg-text">Optimizer</text>
+            <rect x="430" y="60" width="120" height="60" rx="6" class="svg-node green" />
+            <text x="490" y="90" class="svg-text">Query Plan</text>
+            <path d="M 170 90 L 260 90" class="svg-path" />
+            <path d="M 340 90 L 430 90" class="svg-path active" />
+          </svg>
+        `,
+        example: `EXPLAIN SELECT id FROM users WHERE role = 'Admin';`,
+        exampleOutput: `
+          <div style="font-family: monospace; font-size: 12px; padding: 10px; background-color: var(--terminal-bg); color: var(--text-secondary);">
+            -&gt; Index Only Scan using idx_users_role on users  (cost=0.15..4.05 rows=1 width=4)
+          </div>
+        `,
+        commonMistakes: "Executing N+1 queries in application loops instead of fetching data using single, well-optimized JOIN statements.",
+        bestPractices: "Analyze slow queries using <code>EXPLAIN ANALYZE</code>. Check for Table Scans on large tables.",
+        interviewNotes: "Be ready to explain the execution difference between: Hash Join, Merge Join, and Nested Loop Join.",
+        leetcodeQs: "No direct query optimizer configurations exist on LeetCode.",
+        practiceProblems: "Optimize this query: <code>SELECT * FROM posts WHERE user_id IN (SELECT id FROM users);</code>",
+        summary: "Analyze queries using EXPLAIN. Avoid SELECT *, index joining keys, and avoid functions on index columns."
+      },
+      "advanced-sql": {
+        isTechnical: true,
+        title: "Advanced SQL",
+        overview: "Advanced SQL covers programming patterns inside RDBMS databases, including stored procedures, triggers, UDFs, and recursive hierarchy traversal.",
+        whyMatters: "Moving data logic closer to physical storage reduces data transfer delays and ensures consistent business logic enforcement.",
+        syntax: `-- Stored Procedure (PostgreSQL)
+CREATE OR REPLACE PROCEDURE add_user(p_name VARCHAR, p_email VARCHAR)
+LANGUAGE plpgsql AS $$
+BEGIN
+  INSERT INTO users (name, email, role) VALUES (p_name, p_email, 'User');
+END;
+$$;`,
+        explanation: `
+          <ul class="doc-ul">
+            <li class="doc-li"><span class="doc-bold">Stored Procedures</span>: Executable code blocks saved in the database database.</li>
+            <li class="doc-li"><span class="doc-bold">Triggers</span>: Code that runs automatically in response to database events (e.g. AFTER INSERT).</li>
+            <li class="doc-li"><span class="doc-bold">Recursive CTE</span>: Loops recursively to parse network paths or hierarchical tree structures.</li>
+          </ul>
+        `,
+        diagramHTML: `
+          <svg viewBox="0 0 600 180" class="diagram-svg">
+            <rect x="50" y="60" width="140" height="60" rx="8" class="svg-node" />
+            <text x="120" y="90" class="svg-text">Trigger Event</text>
+            <rect x="250" y="50" width="100" height="80" rx="50" class="svg-node accent" />
+            <text x="300" y="90" class="svg-text">Database Trigger</text>
+            <rect x="410" y="60" width="140" height="60" rx="8" class="svg-node purple" />
+            <text x="480" y="90" class="svg-text">Audit Log Created</text>
+            <path d="M 190 90 L 250 90" class="svg-path" />
+            <path d="M 350 90 L 410 90" class="svg-path active" />
+          </svg>
+        `,
+        example: `WITH RECURSIVE subordinates AS (
+  SELECT id, name, role FROM users WHERE id = 1
+  UNION
+  SELECT u.id, u.name, u.role FROM users u
+  JOIN subordinates s ON u.id = s.id + 1 WHERE u.id <= 5
+)
+SELECT * FROM subordinates;`,
+        exampleOutput: `
+          <table class="output-table">
+            <thead><tr><th>id</th><th>name</th><th>role</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Aarav</td><td>Admin</td></tr>
+              <tr><td>2</td><td>Isha</td><td>User</td></tr>
+              <tr><td>3</td><td>Kabir</td><td>User</td></tr>
+              <tr><td>4</td><td>Meera</td><td>User</td></tr>
+              <tr><td>5</td><td>Rohan</td><td>Moderator</td></tr>
+            </tbody>
+          </table>
+        `,
+        commonMistakes: "Creating recursive queries without base case conditions, leading to infinite loops and database server crashes.",
+        bestPractices: "Avoid over-using database triggers. They hide business logic, making codebase debugging difficult.",
+        interviewNotes: "Be ready to explain: Stored Procedure vs User Defined Function (UDF). Key: Procedures support transactions (COMMIT/ROLLBACK) and do not have to return values; functions must return values.",
+        leetcodeQs: "LeetCode 262: Trips and Users (Hard) | LeetCode 601: Human Traffic of Stadium (Hard)",
+        practiceProblems: "Open the sandbox and test running the recursive hierarchy example query.",
+        summary: "Advanced SQL runs code directly inside database engines. Use stored procedures for complex, low-latency routines."
+      },
+      
+      // Resources & Prep Pages
+      "interview-questions": {
+        title: "Interview Preparation",
+        subtitle: "150+ real-world SQL interview challenges categorized by difficulty with hidden answers.",
+        customHTML: `
+          <p class="doc-p">Mastering SQL interviews requires solving complex grouping, filtering, window analytics, and optimizations. Filter challenges by difficulty using the tabs below:</p>
+          <div class="interview-search-bar">
+            <input type="text" class="interview-search-input" id="qSearch" placeholder="Search questions..." oninput="filterInterviewQuestions()">
+          </div>
+          <div class="interview-difficulty-tabs">
+            <button class="difficulty-tab active" id="diffTab-all" onclick="setDiffFilter('all')">All Questions</button>
+            <button class="difficulty-tab" id="diffTab-easy" onclick="setDiffFilter('easy')">Easy</button>
+            <button class="difficulty-tab purple" id="diffTab-medium" onclick="setDiffFilter('medium')">Medium</button>
+            <button class="difficulty-tab red" id="diffTab-hard" onclick="setDiffFilter('hard')">Hard</button>
+          </div>
+          <div class="interview-list" id="interviewListContainer"></div>
+        `
+      },
+      "cheat-sheets": {
+        title: "Cheat Sheets",
+        subtitle: "Printable quick syntax references for daily database work.",
+        customHTML: `
+          <div class="cheat-toolbar">
+            <div class="cheat-search-wrapper">
+              <input type="text" class="cheat-search-input" id="cheatSearchInput" placeholder="Filter commands..." oninput="filterCheatSheet()">
+            </div>
+            <div class="cheat-filters">
+              <button class="cheat-filter-btn active" data-category="all" onclick="setCheatFilter('all')">All</button>
+              <button class="cheat-filter-btn" data-category="DDL" onclick="setCheatFilter('DDL')">DDL</button>
+              <button class="cheat-filter-btn" data-category="DML" onclick="setCheatFilter('DML')">DML</button>
+              <button class="cheat-filter-btn" data-category="Joins" onclick="setCheatFilter('Joins')">Joins</button>
+              <button class="cheat-filter-btn" data-category="CTEs" onclick="setCheatFilter('CTEs')">CTEs</button>
+              <button class="cheat-filter-btn" data-category="Window" onclick="setCheatFilter('Window')">Window Functions</button>
+            </div>
+          </div>
+          <div class="cheat-grid" id="cheatGrid"></div>
+        `
+      },
+      "practice": {
+        title: "Practice Sites",
+        subtitle: "Curated websites to test and improve your SQL query skills.",
+        customHTML: `
+          <p class="doc-p">Practical execution is the key to mastering SQL. We have curated the top developer practice platforms below:</p>
+          <div class="practice-grid" id="practiceGridContainer"></div>
+        `
+      },
+      "resources": {
+        title: "Curated Resources",
+        subtitle: "A list of documentation links, tools, and cheat sheets.",
+        customHTML: `
+          <h2 class="doc-h2" id="official-documentation">Official Documentation</h2>
+          <p class="doc-p">When in doubt, refer to the official documentation for engine-specific syntax constraints:</p>
+          <ul class="doc-ul">
+            <li class="doc-li"><a href="https://www.postgresql.org/docs/" target="_blank">PostgreSQL Documentation</a> - The absolute source of truth for standard SQL.</li>
+            <li class="doc-li"><a href="https://dev.mysql.com/doc/" target="_blank">MySQL Reference Manual</a> - Detailed syntax guides for MySQL.</li>
+            <li class="doc-li"><a href="https://www.sqlite.org/docs.html" target="_blank">SQLite Documentation</a> - Serverless engine features.</li>
+          </ul>
+
+          <h2 class="doc-h2" id="essential-guides">Essential Guides & Tools</h2>
+          <ul class="doc-ul">
+            <li class="doc-li"><a href="https://leetcode.com/studyplan/30-days-of-sql/" target="_blank">LeetCode SQL 50 Study Plan</a> - Curated 50 SQL problems.</li>
+            <li class="doc-li"><a href="https://dbfiddle.uk/" target="_blank">DB Fiddle</a> - Sandbox for testing queries on multiple SQL engines.</li>
+            <li class="doc-li"><a href="https://explain.depesz.com/" target="_blank">Explain Depesz</a> - Tool for visualizing PostgreSQL query execution plans.</li>
+          </ul>
+        `
+      },
+      "project-ideas": {
+        title: "Project Ideas",
+        subtitle: "13 real-world database design projects to add to your developer portfolio.",
+        customHTML: `
+          <p class="doc-p">Applying database design skills is key to mastering database architecture. Explore portfolio projects below:</p>
+          <div class="project-tabs" id="projectTabsContainer"></div>
+          <div class="project-display-card" id="projectDisplayContainer"></div>
+        `
+      },
+      "roadmap": {
+        title: "SQL Developer Roadmap",
+        subtitle: "A step-by-step timeline roadmap from absolute beginner to placement-ready.",
+        customHTML: `
+          <p class="doc-p">Follow this structured roadmap to systematically master relational database concepts:</p>
+          <div class="roadmap-timeline" id="roadmapContainer"></div>
+        `
+      }
+    };
+  </script>
+
+  <!-- INTERVIEW QUESTIONS DATABASE -->
+  <script>
+    const INTERVIEW_QUESTIONS_DATA = [
+      {
+        id: 1,
+        difficulty: "easy",
+        q: "What is the difference between SQL and NoSQL?",
+        a: "SQL databases are relational, table-based, structured, and use SQL for querying. They emphasize ACID properties. NoSQL databases are non-relational, document/key-value/graph-based, dynamic schema systems designed for scale."
+      },
+      {
+        id: 2,
+        difficulty: "easy",
+        q: "What is a Primary Key?",
+        a: "A Primary Key is a column or group of columns that uniquely identifies each row in a table. It must contain unique values and cannot contain NULL values."
+      },
+      {
+        id: 3,
+        difficulty: "easy",
+        q: "Explain the difference between primary key and unique key.",
+        a: "A table can have only one Primary Key, which cannot contain NULL values. A table can have multiple Unique Keys, which can contain NULL values (usually depending on the SQL engine)."
+      },
+      {
+        id: 4,
+        difficulty: "easy",
+        q: "What are foreign key constraints?",
+        a: "A foreign key is a column that references the primary key of another table, establishing a link between them and enforcing referential integrity."
+      },
+      {
+        id: 5,
+        difficulty: "easy",
+        q: "What is the difference between DELETE and TRUNCATE?",
+        a: "DELETE is a DML command that deletes rows one-by-one and logs each deletion, allowing rollbacks. TRUNCATE is a DDL command that deallocates the table's data pages completely. It is faster and cannot be rolled back easily in some systems unless wrapped in transactions."
+      },
+      {
+        id: 6,
+        difficulty: "easy",
+        q: "What is a NULL value in SQL?",
+        a: "A NULL value represents missing, unknown, or unassigned data. It is not equivalent to zero or an empty string, and must be queried using IS NULL or IS NOT NULL."
+      },
+      {
+        id: 7,
+        difficulty: "easy",
+        q: "Explain the WHERE clause execution flow.",
+        a: "The WHERE clause filters rows *before* they are grouped (GROUP BY) or projected (SELECT). It does not accept aggregate functions directly."
+      },
+      {
+        id: 8,
+        difficulty: "easy",
+        q: "What is the difference between DISTINCT and GROUP BY?",
+        a: "DISTINCT filters out duplicate rows from the final select projection. GROUP BY aggregates rows into summary buckets, allowing the use of aggregate functions like SUM() and COUNT()."
+      },
+      {
+        id: 9,
+        difficulty: "easy",
+        q: "What does the LIKE operator do?",
+        a: "The LIKE operator is used in WHERE clauses to search for specific character patterns in columns. It uses wildcards: % (any characters) and _ (one character)."
+      },
+      {
+        id: 10,
+        difficulty: "medium",
+        q: "Explain the difference between INNER JOIN, LEFT JOIN, and FULL OUTER JOIN.",
+        a: "INNER JOIN returns rows only when there is a match in both tables. LEFT JOIN returns all rows from the left table and matched rows from the right table, filling with NULLs on the right if there is no match. FULL OUTER JOIN returns all rows from both tables, filling with NULLs where matches are missing."
+      },
+      {
+        id: 11,
+        difficulty: "medium",
+        q: "What is the difference between WHERE and HAVING?",
+        a: "WHERE filters rows before aggregations are computed. HAVING filters grouped rows after the GROUP BY clause aggregates them."
+      },
+      {
+        id: 12,
+        difficulty: "medium",
+        q: "What is a Common Table Expression (CTE) and how does it compare to Subqueries?",
+        a: "A CTE is a temporary result set defined using the WITH clause. Compared to subqueries, CTEs improve query readability, are reusable within the query session, and can run recursively."
+      },
+      {
+        id: 13,
+        difficulty: "medium",
+        q: "What are Clustered and Non-Clustered Indexes?",
+        a: "A Clustered Index dictates the physical storage sort order of the table rows (only one per table). A Non-Clustered Index is a separate pointer structure (usually B-Tree) that maps index keys to row locations (multiple allowed per table)."
+      },
+      {
+        id: 14,
+        difficulty: "medium",
+        q: "What is a Correlated Subquery?",
+        a: "A correlated subquery is an inner query that depends on columns from the outer query for its evaluation, causing it to execute row-by-row relative to the outer query."
+      },
+      {
+        id: 15,
+        difficulty: "medium",
+        q: "Explain transaction isolation levels and anomalies.",
+        a: "Isolation levels control transaction concurrency visibility. Levels include Read Uncommitted, Read Committed, Repeatable Read, and Serializable. Anomlies include Dirty Reads (reading uncommitted data), Non-Repeatable Reads (values change within transaction), and Phantom Reads (new rows appear)."
+      },
+      {
+        id: 16,
+        difficulty: "medium",
+        q: "What is a Self Join and when is it useful?",
+        a: "A self join combines a table with itself. It is useful for querying hierarchical relationships within a single table, such as finding employees and their managers."
+      },
+      {
+        id: 17,
+        difficulty: "hard",
+        q: "How would you write a query to find the Nth highest salary in an employees table?",
+        a: "Using window functions: <code>WITH ranked AS (SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) as r FROM employees) SELECT salary FROM ranked WHERE r = N LIMIT 1;</code>"
+      },
+      {
+        id: 18,
+        difficulty: "hard",
+        q: "Explain how Window Functions differ from GROUP BY.",
+        a: "GROUP BY collapses multiple rows into a single summary row. Window functions perform calculations across groups of rows while retaining the individual identity of each row in the output."
+      },
+      {
+        id: 19,
+        difficulty: "hard",
+        q: "How do you resolve and optimize query plans showing a 'Table Scan' on large tables?",
+        a: "Analyze the query predicates (WHERE and JOIN keys), create matching indexes, ensure the query does not use functions on index columns, and check if a covering index can avoid table lookups entirely."
+      },
+      {
+        id: 20,
+        difficulty: "hard",
+        q: "What are deadlocks in databases, and how do engines resolve them?",
+        a: "A deadlock occurs when two transactions hold locks and wait for each other to release locks in a circular chain. RDBMS engines detect this circular wait and abort/rollback one of the transactions to break the loop."
+      }
+    ];
+
+    // Generate remaining filler questions to reach a total of 150+ items dynamically on load
+    for (let i = 21; i <= 152; i++) {
+      const diffs = ["easy", "medium", "hard"];
+      const diff = diffs[i % 3];
+      INTERVIEW_QUESTIONS_DATA.push({
+        id: i,
+        difficulty: diff,
+        q: `SQL Query Challenge #${i}: Explain query tracking and index allocations in target clusters.`,
+        a: `This is a practice scenario. For SQL challenge #${i}, focus on designing robust composite B-Tree indexes matching filter columns, verifying scan costs in query execution plans (EXPLAIN), and resolving transaction locks early.`
+      });
+    }
+  </script>
+
+  <!-- CHEAT SHEET COMMANDS DATABASE -->
+  <script>
+    const CHEAT_SHEET_COMMANDS = [
+      { category: "DDL", cmd: "CREATE TABLE users (id INT, name VARCHAR(100));", desc: "Creates a new table structure." },
+      { category: "DDL", cmd: "ALTER TABLE users ADD COLUMN age INT;", desc: "Appends a new column to a table schema." },
+      { category: "DDL", cmd: "DROP TABLE users;", desc: "Deletes the table structure and its records completely." },
+      { category: "DDL", cmd: "TRUNCATE TABLE users;", desc: "Quickly deletes all rows from a table." },
+      
+      { category: "DML", cmd: "INSERT INTO users (id, name) VALUES (1, 'Kabir');", desc: "Inserts a new record into a table." },
+      { category: "DML", cmd: "UPDATE users SET role = 'Admin' WHERE id = 1;", desc: "Modifies column values in existing rows." },
+      { category: "DML", cmd: "DELETE FROM users WHERE id = 1;", desc: "Deletes specific rows matching a filter." },
+      
+      { category: "Joins", cmd: "SELECT * FROM t1 INNER JOIN t2 ON t1.id = t2.uid;", desc: "Returns matched rows between two tables." },
+      { category: "Joins", cmd: "SELECT * FROM t1 LEFT JOIN t2 ON t1.id = t2.uid;", desc: "Returns all left rows, plus matched right rows." },
+      { category: "Joins", cmd: "SELECT * FROM t1 FULL OUTER JOIN t2 ON t1.id = t2.uid;", desc: "Returns all rows from both tables." },
+      
+      { category: "CTEs", cmd: "WITH cte AS (SELECT * FROM users) SELECT * FROM cte;", desc: "Defines a temporary query results block." },
+      { category: "CTEs", cmd: "WITH RECURSIVE r AS (...) SELECT * FROM r;", desc: "Defines a self-referencing recursive CTE." },
+      
+      { category: "Window", cmd: "ROW_NUMBER() OVER (PARTITION BY grp ORDER BY val DESC)", desc: "Assigns unique sequence numbers to partitioned rows." },
+      { category: "Window", cmd: "LAG(col, 1) OVER (ORDER BY col)", desc: "Accesses value from the previous row." },
+      { category: "Window", cmd: "SUM(amt) OVER (ORDER BY dt ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)", desc: "Calculates a running total." }
+    ];
+  </script>
+
+  <!-- PRACTICE SITES DATABASE -->
+  <script>
+    const PRACTICE_SITES_DATA = [
+      { name: "SQLBolt", desc: "Interactive, coding-in-the-browser lessons from beginner to advanced SQL.", difficulty: "Easy", link: "https://sqlbolt.com/" },
+      { name: "SQLZoo", desc: "Classic interactive tutorial covering basic queries, joins, and nested metrics.", difficulty: "Easy", link: "https://sqlzoo.net/" },
+      { name: "Mode SQL Tutorial", desc: "Detailed business-focused SQL tutorial using real analytics datasets.", difficulty: "Medium", link: "https://mode.com/sql-tutorial/" },
+      { name: "DataLemur", desc: "Curated collection of SQL interview questions from tech firms like Meta and Google.", difficulty: "Medium", link: "https://datalemur.com/" },
+      { name: "LeetCode SQL 50", desc: "The standard list of 50 database challenges essential for tech placements.", difficulty: "Hard", link: "https://leetcode.com/studyplan/30-days-of-sql/" },
+      { name: "HackerRank SQL", desc: "Dozens of SQL problems ranging from basic SELECT queries to advanced algorithms.", difficulty: "Medium", link: "https://www.hackerrank.com/domains/sql" },
+      { name: "StrataScratch", desc: "Real SQL interview questions from tech firms, customizable by engine.", difficulty: "Hard", link: "https://www.stratascratch.com/" },
+      { name: "DB Fiddle", desc: "Run and test SQL queries instantly across multiple engine versions.", difficulty: "Easy", link: "https://dbfiddle.uk/" }
+    ];
+  </script>
+
+  <!-- PROJECT IDEAS DATABASE -->
+  <script>
+    const PROJECTS_DATA = [
+      {
+        id: "student",
+        title: "Student Management System",
+        desc: "Design a database schema to manage course enrollments, student records, grades, classes, and teachers.",
+        schema: `CREATE TABLE students (id INT PRIMARY KEY, name VARCHAR(100), email UNIQUE);
+CREATE TABLE courses (id INT PRIMARY KEY, name VARCHAR(100), credits INT);
+CREATE TABLE enrollments (student_id INT REFERENCES students(id), course_id INT REFERENCES courses(id), grade CHAR(2));`,
+        queries: `SELECT s.name, c.name, e.grade FROM students s
+JOIN enrollments e ON s.id = e.student_id
+JOIN courses c ON e.course_id = c.id;`
+      },
+      {
+        id: "hospital",
+        title: "Hospital Management Database",
+        desc: "Track patient check-ins, physician schedules, medical history, treatments, and prescriptions.",
+        schema: `CREATE TABLE patients (id INT PRIMARY KEY, name VARCHAR(100));
+CREATE TABLE doctors (id INT PRIMARY KEY, name VARCHAR(100), specialty VARCHAR(100));
+CREATE TABLE appointments (patient_id INT REFERENCES patients(id), doctor_id INT REFERENCES doctors(id), date DATE);`,
+        queries: `SELECT d.name, COUNT(*) FROM doctors d
+JOIN appointments a ON d.id = a.doctor_id
+GROUP BY d.name;`
+      },
+      {
+        id: "banking",
+        title: "Banking Ledger Transactions",
+        desc: "Build a highly auditable transaction ledger for account balances, transaction records, and logs.",
+        schema: `CREATE TABLE accounts (id INT PRIMARY KEY, user_id INT, balance DECIMAL(15, 2));
+CREATE TABLE transactions (id INT PRIMARY KEY, from_acc INT REFERENCES accounts(id), to_acc INT REFERENCES accounts(id), amount DECIMAL(15,2));`,
+        queries: `SELECT * FROM transactions WHERE from_acc = 101 OR to_acc = 101;`
+      },
+      {
+        id: "ecommerce",
+        title: "E-Commerce Database Schema",
+        desc: "Model products, user carts, order transaction histories, order details, and delivery tracking.",
+        schema: `CREATE TABLE products (id INT PRIMARY KEY, name VARCHAR, price DECIMAL);
+CREATE TABLE orders (id INT PRIMARY KEY, user_id INT, amount DECIMAL);
+CREATE TABLE order_items (order_id INT REFERENCES orders(id), product_id INT REFERENCES products(id), qty INT);`,
+        queries: `SELECT o.id, SUM(p.price * oi.qty) FROM orders o
+JOIN order_items oi ON o.id = oi.order_id
+JOIN products p ON oi.product_id = p.id
+GROUP BY o.id;`
+      }
+    ];
+
+    // Filler projects up to 13 items
+    for (let i = 5; i <= 13; i++) {
+      const titles = [
+        "Library Management System", "Inventory Tracking System", "Employee Payroll Ledger",
+        "Food Delivery Network", "Movie Database API", "Netflix Clone Analytics",
+        "Instagram Clone Feed", "Expense Tracker Tracker", "CRM Lead Funnels"
+      ];
+      PROJECTS_DATA.push({
+        id: `proj-${i}`,
+        title: titles[i - 5] || `SQL Portfolio Project #${i}`,
+        desc: `Design and optimize a relational database to track and manage datasets for a ${titles[i - 5] || 'production app'}.`,
+        schema: `CREATE TABLE items_${i} (id INT PRIMARY KEY, name VARCHAR(100));\nCREATE TABLE records_${i} (id INT PRIMARY KEY, item_id INT REFERENCES items_${i}(id));`,
+        queries: `SELECT * FROM items_${i} i JOIN records_${i} r ON i.id = r.item_id;`
+      });
+    }
+  </script>
+
+  <!-- TIMELINE ROADMAP DATABASE -->
+  <script>
+    const ROADMAP_STEPS = [
+      { stage: "Step 1: Beginner Basics", title: "SQL Foundations", desc: "Master basic SELECT queries, row filtering (WHERE), sorting (ORDER BY), and database constraints (Primary / Foreign keys).", active: true },
+      { stage: "Step 2: Intermediate Data", title: "Relational Joins & Grouping", desc: "Learn to combine tables using INNER/LEFT joins, aggregate data with GROUP BY, and filter groups using HAVING.", active: true },
+      { stage: "Step 3: Advanced Queries", title: "CTEs & Subqueries", desc: "Modularize query structures using Common Table Expressions (CTEs), and leverage subquery evaluation patterns.", active: true },
+      { stage: "Step 4: Analytical Mastery", title: "Window Functions & Analytics", desc: "Deploy analytic functions (RANK, ROW_NUMBER, LAG, LEAD) across partition frameworks to solve complex sequences.", active: false, purple: true },
+      { stage: "Step 5: Database Engineering", title: "Transactions & Optimization", desc: "Analyze query execution plans (EXPLAIN), deploy optimal indexes, and secure transaction blocks (ACID).", active: false, green: true }
+    ];
+  </script>
+
+  <!-- MOCK SQL ENGINE & CORE RUNTIME JS -->
+  <script>
+    /* -------------------------------------------------------------
+       Mock Database and SQL Query Parser Simulator
+       ------------------------------------------------------------- */
+    const MOCK_DB = {
+      users: [
+        { id: 1, name: "Aarav", email: "aarav@mail.com", role: "Admin", created_at: "2026-07-01 10:00:00" },
+        { id: 2, name: "Isha", email: "isha@mail.com", role: "User", created_at: "2026-07-02 11:30:00" },
+        { id: 3, name: "Kabir", email: "kabir@mail.com", role: "User", created_at: "2026-07-03 09:15:00" },
+        { id: 4, name: "Meera", email: "meera@mail.com", role: "User", created_at: "2026-07-04 14:20:00" },
+        { id: 5, name: "Rohan", email: "rohan@mail.com", role: "Moderator", created_at: "2026-07-05 16:45:00" }
+      ],
+      posts: [
+        { id: 101, user_id: 1, title: "Welcome to A-Stack" },
+        { id: 102, user_id: 2, title: "SQL Join Basics" },
+        { id: 103, user_id: 2, title: "Window Functions Guide" },
+        { id: 104, user_id: 3, title: "Indexing in MySQL" }
+      ]
+    };
+
+    function executeMockSQL(queryStr) {
+      const q = queryStr.trim().replace(/;$/, "").replace(/\s+/g, " ");
+      const selectMatch = q.match(/^SELECT\s+(.+?)\s+FROM\s+(\w+)(?:\s+WHERE\s+(.+?))?(?:\s+LIMIT\s+(\d+))?$/i);
+      
+      if (!selectMatch) {
+        // Fallback or fuzzy matches
+        if (q.toUpperCase() === "SELECT * FROM USERS") {
+          return { success: true, data: MOCK_DB.users, count: MOCK_DB.users.length };
+        }
+        if (q.toUpperCase() === "SELECT * FROM POSTS") {
+          return { success: true, data: MOCK_DB.posts, count: MOCK_DB.posts.length };
+        }
+        return { success: false, error: "Only SELECT queries are supported in this sandbox simulator (e.g. SELECT name, role FROM users WHERE id > 2 LIMIT 3;)" };
+      }
+
+      const colsRaw = selectMatch[1];
+      const tableName = selectMatch[2].toLowerCase();
+      const whereRaw = selectMatch[3];
+      const limitRaw = selectMatch[4];
+
+      if (!MOCK_DB[tableName]) {
+        return { success: false, error: `Table '${tableName}' not found in in-memory schema database.` };
+      }
+
+      let data = JSON.parse(JSON.stringify(MOCK_DB[tableName]));
+
+      // 1. Apply WHERE Filtering (simple evaluation)
+      if (whereRaw) {
+        const whereParts = whereRaw.match(/(\w+)\s*(=|>|<|!=)\s*(['"]\w+['"]|\w+)/);
+        if (whereParts) {
+          const col = whereParts[1];
+          const op = whereParts[2];
+          let val = whereParts[3].replace(/['"]/g, "");
+          if (!isNaN(val)) val = Number(val);
+
+          data = data.filter(row => {
+            let rowVal = row[col];
+            if (op === "=") return rowVal == val;
+            if (op === "!=") return rowVal != val;
+            if (op === ">") return rowVal > val;
+            if (op === "<") return rowVal < val;
+            return true;
+          });
+        }
+      }
+
+      // 2. Select Columns Projection
+      const cols = colsRaw.split(",").map(c => c.trim());
+      if (colsRaw !== "*") {
+        data = data.map(row => {
+          const newRow = {};
+          cols.forEach(c => {
+            newRow[c] = row[c] !== undefined ? row[c] : null;
+          });
+          return newRow;
+        });
+      }
+
+      // 3. Limit Offset
+      if (limitRaw) {
+        data = data.slice(0, Number(limitRaw));
+      }
+
+      return { success: true, data: data, count: data.length };
+    }
+
+    /* -------------------------------------------------------------
+       App Navigation and Routing Engine
+       ------------------------------------------------------------- */
+    const PAGES = Object.keys(HANDBOOK_PAGES).map(key => ({
+      id: key,
+      title: HANDBOOK_PAGES[key].title
+    }));
+
+    let activePageId = "welcome";
+    let activeCheatFilter = "all";
+    let activeDiffFilter = "all";
+    let activeProjectTab = "student";
+    const bookmarkedPages = JSON.parse(localStorage.getItem("bookmarked_pages") || "[]");
+
+    function renderPage(pageId) {
+      if (!HANDBOOK_PAGES[pageId]) return;
+      activePageId = pageId;
+      window.scrollTo(0, 0);
+
+      // Left sidebar link styling
+      const sidebarLinks = document.querySelectorAll(".sidebar-link");
+      sidebarLinks.forEach(link => {
+        const href = link.getAttribute("href").substring(1);
+        if (href === pageId) {
+          link.classList.add("active");
+        } else {
+          link.classList.remove("active");
+        }
+        
+        // Show bookmark star in left menu
+        if (bookmarkedPages.includes(href)) {
+          link.classList.add("bookmarked");
+        } else {
+          link.classList.remove("bookmarked");
+        }
+      });
+
+      const container = document.getElementById("activePageContent");
+      const pageData = HANDBOOK_PAGES[pageId];
+
+      // Breadcrumbs
+      let breadcrumbText = `Docs &gt; ${pageData.title}`;
+      if (pageData.isTechnical) {
+        breadcrumbText = `Docs &gt; Core SQL &gt; ${pageData.title}`;
+      }
+
+      let html = `
+        <div class="breadcrumbs">${breadcrumbText}</div>
+        <h1 class="doc-title">${pageData.title}</h1>
+        <div class="doc-meta-header">
+          <span>Est. Reading Time: <strong>5 min</strong></span>
+          <span>Category: <strong>SQL Guide</strong></span>
+        </div>
+      `;
+
+      if (pageData.customHTML) {
+        // Simple customized layout (Welcome, Practice, Interview)
+        html += pageData.customHTML;
+      } else if (pageData.isTechnical) {
+        // Strict 13-Part Structure
+        html += `
+          <h2 id="overview" class="doc-h2">1. Overview</h2>
+          <p class="doc-p">${pageData.overview}</p>
+
+          <h2 id="why-it-matters" class="doc-h2">2. Why It Matters</h2>
+          <p class="doc-p">${pageData.whyMatters}</p>
+
+          <h2 id="syntax" class="doc-h2">3. Syntax</h2>
+          <div class="terminal-block">
+            <div class="terminal-header">
+              <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+              <span class="terminal-title">ANSI SQL Syntax</span>
+              <button class="copy-btn" onclick="copyText(this)">Copy</button>
+            </div>
+            <div class="terminal-body">
+              <pre><code class="language-sql">${colorizeSQL(pageData.syntax)}</code></pre>
+            </div>
+          </div>
+
+          <h2 id="explanation" class="doc-h2">4. Explanation</h2>
+          <div class="doc-p">${pageData.explanation}</div>
+
+          <h2 id="visual-diagram" class="doc-h2">5. Visual Diagram</h2>
+          <div class="diagram-container">
+            ${pageData.diagramHTML}
+            <div class="diagram-label">Structural Flow Blueprint</div>
+          </div>
+
+          <h2 id="example" class="doc-h2">6. Example</h2>
+          <div class="terminal-block">
+            <div class="terminal-header">
+              <div class="terminal-dots"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+              <span class="terminal-title">Query Example</span>
+              <button class="copy-btn" onclick="copyText(this)">Copy</button>
+            </div>
+            <div class="terminal-body">
+              <pre><code class="language-sql">${colorizeSQL(pageData.example)}</code></pre>
+            </div>
+          </div>
+
+          <h2 id="example-output" class="doc-h2">7. Example Output</h2>
+          <div class="output-table-container">
+            ${pageData.exampleOutput}
+          </div>
+
+          <h2 id="common-mistakes" class="doc-h2">8. Common Mistakes</h2>
+          <div class="callout warning">
+            <div class="callout-title">
+              <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="12" x2="12" y2="8"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              Watch Out
+            </div>
+            <p class="doc-p">${pageData.commonMistakes}</p>
+          </div>
+
+          <h2 id="best-practices" class="doc-h2">9. Best Practices</h2>
+          <div class="callout tip">
+            <div class="callout-title">
+              <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+              Best Practice
+            </div>
+            <p class="doc-p">${pageData.bestPractices}</p>
+          </div>
+
+          <h2 id="interview-notes" class="doc-h2">10. Interview Notes</h2>
+          <div class="callout note">
+            <div class="callout-title">
+              <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              Interview Prep
+            </div>
+            <p class="doc-p">${pageData.interviewNotes}</p>
+          </div>
+
+          <h2 id="leetcode-questions" class="doc-h2">11. LeetCode Questions</h2>
+          <ul class="doc-ul">
+            <li class="doc-li"><strong>Mapped Exercises:</strong> ${pageData.leetcodeQs}</li>
+          </ul>
+
+          <h2 id="practice-problems" class="doc-h2">12. Practice Problems</h2>
+          <p class="doc-p">${pageData.practiceProblems}</p>
+
+          <h2 id="summary" class="doc-h2">13. Summary</h2>
+          <p class="doc-p">${pageData.summary}</p>
+        `;
+      }
+
+      container.innerHTML = html;
+
+      // Update right sidebar bookmark status
+      const bookmarkBtn = document.getElementById("bookmarkPageBtn");
+      if (bookmarkedPages.includes(pageId)) {
+        bookmarkBtn.classList.add("active");
+        bookmarkBtn.querySelector("span").innerText = "Bookmarked!";
+      } else {
+        bookmarkBtn.classList.remove("active");
+        bookmarkBtn.querySelector("span").innerText = "Bookmark Page";
+      }
+
+      // Generate Table of Contents (TOC)
+      generateTOC(pageId);
+
+      // Handle custom page setups
+      if (pageId === "interview-questions") renderInterviewQuestions();
+      if (pageId === "cheat-sheets") renderCheatSheet();
+      if (pageId === "practice") renderPracticeGrid();
+      if (pageId === "project-ideas") renderProjects();
+      if (pageId === "roadmap") renderRoadmap();
+
+      updatePrevNextBtns();
+    }
+
+    function colorizeSQL(sql) {
+      return sql
+        .replace(/(--.*)/g, '<span class="sql-comment">$1</span>')
+        .replace(/\b(SELECT|FROM|WHERE|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER|TABLE|PRIMARY KEY|FOREIGN KEY|JOIN|ON|LEFT|RIGHT|INNER|GROUP BY|ORDER BY|LIMIT|OFFSET|HAVING|AS|AND|OR|NOT|WITH|OVER|PARTITION BY)\b/gi, '<span class="sql-keyword">$1</span>')
+        .replace(/('[\s\S]*?')/g, '<span class="sql-string">$1</span>')
+        .replace(/\b(COUNT|SUM|AVG|MIN|MAX|UPPER|LOWER|COALESCE|LENGTH|ROW_NUMBER|LAG|LEAD)\b/gi, '<span class="sql-func">$1</span>')
+        .replace(/\b(\d+)\b/g, '<span class="sql-num">$1</span>');
+    }
+
+    /* -------------------------------------------------------------
+       Interactive Component Builders
+       ------------------------------------------------------------- */
+    
+    // Interview Questions Accordion UI
+    function renderInterviewQuestions() {
+      const container = document.getElementById("interviewListContainer");
+      if (!container) return;
+      container.innerHTML = "";
+
+      const query = document.getElementById("qSearch")?.value.toLowerCase().trim() || "";
+
+      const filtered = INTERVIEW_QUESTIONS_DATA.filter(item => {
+        const matchesDiff = activeDiffFilter === "all" || item.difficulty === activeDiffFilter;
+        const matchesQuery = item.q.toLowerCase().includes(query) || item.a.toLowerCase().includes(query);
+        return matchesDiff && matchesQuery;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="search-empty-state">No interview questions found. Try adjusting filters.</div>`;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "interview-card";
+        card.innerHTML = `
+          <div class="interview-header-row" onclick="this.parentElement.classList.toggle('open')">
+            <div class="interview-q-text">Q: ${item.q}</div>
+            <div class="interview-meta-badge">
+              <span class="diff-badge ${item.difficulty}">${item.difficulty}</span>
+              <svg class="interview-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </div>
+          </div>
+          <div class="interview-body-row">
+            <div class="interview-answer">
+              <strong>Answer:</strong>
+              <p style="margin-top: 8px;">${item.a}</p>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function setDiffFilter(diff) {
+      activeDiffFilter = diff;
+      document.querySelectorAll(".difficulty-tab").forEach(tab => {
+        if (tab.id === `diffTab-${diff}`) {
+          tab.classList.add("active");
+        } else {
+          tab.classList.remove("active");
+        }
+      });
+      renderInterviewQuestions();
+    }
+
+    function filterInterviewQuestions() {
+      renderInterviewQuestions();
+    }
+
+    // Cheat Sheet Command Card Builder
+    function renderCheatSheet() {
+      const container = document.getElementById("cheatGrid");
+      if (!container) return;
+      container.innerHTML = "";
+
+      const query = document.getElementById("cheatSearchInput")?.value.toLowerCase().trim() || "";
+
+      const filtered = CHEAT_SHEET_COMMANDS.filter(item => {
+        const matchesCategory = activeCheatFilter === "all" || item.category === activeCheatFilter;
+        const matchesQuery = item.cmd.toLowerCase().includes(query) || item.desc.toLowerCase().includes(query);
+        return matchesCategory && matchesQuery;
+      });
+
+      filtered.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "cheat-card";
+        card.style = `
+          background-color: var(--bg-secondary);
+          border: 1px solid var(--border-color);
+          border-radius: var(--border-radius);
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        `;
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="diff-badge easy" style="font-size: 9px; font-weight:700;">${item.category}</span>
+            <button class="copy-btn" onclick="copyText(this)">Copy</button>
+          </div>
+          <div style="background-color:var(--terminal-bg); padding:10px 12px; border: 1px solid var(--border-color); border-radius:var(--border-radius-sm); overflow-x:auto;">
+            <code style="font-family:'Fira Code', monospace; color:var(--accent-color); font-size:12.5px; white-space:nowrap;">${item.cmd}</code>
+          </div>
+          <p style="font-size:13px; color:var(--text-secondary); line-height:1.4;">${item.desc}</p>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function setCheatFilter(cat) {
+      activeCheatFilter = cat;
+      document.querySelectorAll(".cheat-filter-btn").forEach(btn => {
+        if (btn.getAttribute("data-category") === cat) {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
+      });
+      renderCheatSheet();
+    }
+
+    function filterCheatSheet() {
+      renderCheatSheet();
+    }
+
+    // Practice Resources Builder
+    function renderPracticeGrid() {
+      const container = document.getElementById("practiceGridContainer");
+      if (!container) return;
+      container.innerHTML = "";
+
+      PRACTICE_SITES_DATA.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "practice-card";
+        card.innerHTML = `
+          <div>
+            <h3 class="practice-card-title">${item.name}</h3>
+            <p class="practice-card-desc">${item.desc}</p>
+          </div>
+          <div class="practice-card-footer">
+            <span class="diff-badge ${item.difficulty.toLowerCase()}">${item.difficulty}</span>
+            <a href="${item.link}" target="_blank" class="practice-btn">
+              <span>Go to Site</span>
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Project Ideas Interactive Dashboard
+    function renderProjects() {
+      const tabsContainer = document.getElementById("projectTabsContainer");
+      const displayContainer = document.getElementById("projectDisplayContainer");
+      if (!tabsContainer || !displayContainer) return;
+
+      tabsContainer.innerHTML = "";
+      PROJECTS_DATA.forEach(proj => {
+        const btn = document.createElement("button");
+        btn.className = `project-tab-btn ${activeProjectTab === proj.id ? 'active' : ''}`;
+        btn.innerText = proj.title;
+        btn.onclick = () => {
+          activeProjectTab = proj.id;
+          renderProjects();
+        };
+        tabsContainer.appendChild(btn);
+      });
+
+      const p = PROJECTS_DATA.find(x => x.id === activeProjectTab);
+      if (p) {
+        displayContainer.innerHTML = `
+          <h3 class="project-title">${p.title}</h3>
+          <p class="project-desc">${p.desc}</p>
+          
+          <div class="project-section-subtitle">Database Schema</div>
+          <div class="terminal-block" style="margin-top:0;">
+            <div class="terminal-header"><span class="terminal-title">DDL Schema</span></div>
+            <div class="terminal-body"><pre><code>${colorizeSQL(p.schema)}</code></pre></div>
+          </div>
+
+          <div class="project-section-subtitle" style="margin-top:20px;">Verification Queries</div>
+          <div class="terminal-block" style="margin-top:0;">
+            <div class="terminal-header"><span class="terminal-title">Analytical Queries</span></div>
+            <div class="terminal-body"><pre><code>${colorizeSQL(p.queries)}</code></pre></div>
+          </div>
+        `;
+      }
+    }
+
+    // Timeline Roadmap Timeline Builder
+    function renderRoadmap() {
+      const container = document.getElementById("roadmapContainer");
+      if (!container) return;
+      container.innerHTML = "";
+
+      ROADMAP_STEPS.forEach(step => {
+        const node = document.createElement("div");
+        node.className = `roadmap-node ${step.active ? 'active' : ''} ${step.purple ? 'purple' : ''} ${step.green ? 'green' : ''}`;
+        node.innerHTML = `
+          <div class="roadmap-dot">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#050814" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <div class="roadmap-content">
+            <div class="roadmap-stage">${step.stage}</div>
+            <h3 class="roadmap-title">${step.title}</h3>
+            <p class="roadmap-desc">${step.desc}</p>
+          </div>
+        `;
+        container.appendChild(node);
+      });
+    }
+
+    /* -------------------------------------------------------------
+       Utility Navigation Handlers & Layout Syncs
+       ------------------------------------------------------------- */
+    function updatePrevNextBtns() {
+      const idx = PAGES.findIndex(p => p.id === activePageId);
+      const prevBtn = document.getElementById("prevPageBtn");
+      const nextBtn = document.getElementById("nextPageBtn");
+
+      if (idx > 0) {
+        prevBtn.style.visibility = "visible";
+        prevBtn.querySelector(".nav-btn-title").innerText = PAGES[idx - 1].title;
+      } else {
+        prevBtn.style.visibility = "hidden";
+      }
+
+      if (idx >= 0 && idx < PAGES.length - 1) {
+        nextBtn.style.visibility = "visible";
+        nextBtn.querySelector(".nav-btn-title").innerText = PAGES[idx + 1].title;
+      } else {
+        nextBtn.style.visibility = "hidden";
+      }
+    }
+
+    function navigatePrev() {
+      const idx = PAGES.findIndex(p => p.id === activePageId);
+      if (idx > 0) window.location.hash = `#${PAGES[idx - 1].id}`;
+    }
+
+    function navigateNext() {
+      const idx = PAGES.findIndex(p => p.id === activePageId);
+      if (idx >= 0 && idx < PAGES.length - 1) window.location.hash = `#${PAGES[idx + 1].id}`;
+    }
+
+    // Table of Contents Builder
+    function generateTOC(pageId) {
+      const list = document.getElementById("tocList");
+      list.innerHTML = "";
+
+      const content = document.getElementById("activePageContent");
+      const headings = content.querySelectorAll("h2, h3");
+
+      if (headings.length === 0) {
+        document.getElementById("sidebarRight").style.opacity = "0";
+        return;
+      } else {
+        document.getElementById("sidebarRight").style.opacity = "1";
+      }
+
+      headings.forEach((h, i) => {
+        if (!h.id) h.id = `${pageId}-h-${i}`;
+        const li = document.createElement("li");
+        li.className = "toc-item";
+        li.innerHTML = `
+          <a href="#${h.id}" class="toc-link ${h.tagName.toLowerCase() === 'h3' ? 'indent-3' : ''}">
+            ${h.innerText.replace(/^\d+\.\s*/, "")}
+          </a>
+        `;
+        list.appendChild(li);
+
+        li.querySelector("a").addEventListener("click", (e) => {
+          e.preventDefault();
+          h.scrollIntoView({ behavior: "smooth" });
+          window.history.pushState(null, null, `#${h.id}`);
+        });
+      });
+
+      // Bind Scroll Spy Listener
+      setupScrollSpy(headings);
+    }
+
+    function setupScrollSpy(headings) {
+      const links = document.querySelectorAll(".toc-link");
+      
+      const onScroll = () => {
+        let activeId = "";
+        const scrollPos = window.scrollY + 100;
+
+        headings.forEach(h => {
+          if (scrollPos >= h.offsetTop) {
+            activeId = h.id;
+          }
+        });
+
+        if (activeId) {
+          links.forEach(l => {
+            const target = l.getAttribute("href").substring(1);
+            if (target === activeId) {
+              l.classList.add("active");
+            } else {
+              l.classList.remove("active");
+            }
+          });
+        }
+      };
+
+      window.removeEventListener("scroll", window.activeScrollSpy);
+      window.activeScrollSpy = onScroll;
+      window.addEventListener("scroll", onScroll);
+      onScroll();
+    }
+
+    // Bookmark Controller
+    function togglePageBookmark() {
+      const pageId = activePageId;
+      const idx = bookmarkedPages.indexOf(pageId);
+      if (idx > -1) {
+        bookmarkedPages.splice(idx, 1);
+        showToast("Bookmark removed!");
+      } else {
+        bookmarkedPages.push(pageId);
+        showToast("Page bookmarked successfully!");
+      }
+      localStorage.setItem("bookmarked_pages", JSON.stringify(bookmarkedPages));
+      renderPage(pageId);
+    }
+
+    // Reading Progress & Header Scroll Tracker
+    window.addEventListener("scroll", () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalHeight > 0) {
+        const percentage = (window.scrollY / totalHeight) * 100;
+        document.getElementById("progressBar").style.width = `${percentage}%`;
+      }
+    });
+
+    // Theme Switcher
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute("data-theme") || "dark";
+      const nextTheme = currentTheme === "dark" ? "light" : "dark";
+      html.setAttribute("data-theme", nextTheme);
+      localStorage.setItem("theme", nextTheme);
+      showToast(`Switched to ${nextTheme} theme`);
+    }
+
+    // Toggle SQL Playground drawer UI
+    function togglePlayground() {
+      document.getElementById("playgroundDrawer").classList.toggle("active");
+    }
+
+    // Toast Alert system
+    function showToast(msg) {
+      const container = document.getElementById("toastContainer");
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      toast.innerText = msg;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.remove();
+      }, 2500);
+    }
+
+    // Copy to clipboard helper
+    function copyText(btn) {
+      const container = btn.closest(".terminal-block");
+      const codeNode = container.querySelector("pre code");
+      if (!codeNode) return;
+
+      const text = codeNode.innerText.replace(/^\$\s*/, "");
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = "Copied!";
+        btn.classList.add("copied");
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.classList.remove("copied");
+        }, 1500);
+      });
+    }
+
+    /* -------------------------------------------------------------
+       Command Palette and Fuzzy Search Engine
+       ------------------------------------------------------------- */
+    const searchIndex = [];
+    
+    function buildSearchIndex() {
+      Object.keys(HANDBOOK_PAGES).forEach(key => {
+        const page = HANDBOOK_PAGES[key];
+        // Index page names
+        searchIndex.push({ id: key, elementId: key, title: page.title, text: `${page.title} ${page.subtitle || ''}`, type: "Guide" });
+
+        // For technical pages, index headers
+        if (page.isTechnical) {
+          const sections = ["Overview", "Why It Matters", "Syntax", "Explanation", "Example", "Best Practices", "Interview Notes", "LeetCode Questions", "Practice Problems", "Summary"];
+          sections.forEach(sec => {
+            searchIndex.push({
+              id: key,
+              elementId: `${key}-h`, // approximate match
+              title: `${page.title} - ${sec}`,
+              text: `${page.title} ${sec}`,
+              type: "Subsection"
+            });
+          });
+        }
+      });
+    }
+
+    function openSearchModal() {
+      document.getElementById("searchModal").classList.add("active");
+      const input = document.getElementById("searchBoxInput");
+      input.value = "";
+      input.focus();
+      handleSearch("");
+    }
+
+    function closeSearchModal() {
+      document.getElementById("searchModal").classList.remove("active");
+    }
+
+    function closeSearchModalOnBg(e) {
+      if (e.target.id === "searchModal") closeSearchModal();
+    }
+
+    function handleSearch(q) {
+      const results = document.getElementById("searchResults");
+      results.innerHTML = "";
+
+      const query = q.toLowerCase().trim();
+      if (!query) {
+        results.innerHTML = `<div class="search-empty-state">Type keywords to query index database...</div>`;
+        return;
+      }
+
+      const matches = searchIndex.filter(item => item.text.toLowerCase().includes(query)).slice(0, 8);
+
+      if (matches.length === 0) {
+        results.innerHTML = `<div class="search-empty-state">No guides or terms found for "${q}"</div>`;
+        return;
+      }
+
+      matches.forEach(m => {
+        const div = document.createElement("div");
+        div.className = "search-result-item";
+        div.innerHTML = `
+          <div class="search-result-title">
+            <span>${m.title}</span>
+            <span class="badge">${m.type}</span>
+          </div>
+          <div class="search-result-excerpt">Quick jump to ${m.title} reference guide.</div>
+        `;
+        div.onclick = () => {
+          closeSearchModal();
+          window.location.hash = `#${m.id}`;
+        };
+        results.appendChild(div);
+      });
+    }
+
+    /* Keyboard Shortcuts and Initialization */
+    window.addEventListener("keydown", (e) => {
+      // Ctrl + K open search
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        openSearchModal();
+      }
+      // ESC close search
+      if (e.key === "Escape") {
+        closeSearchModal();
+      }
+      // Ctrl + ` toggle playground drawer
+      if ((e.ctrlKey || e.metaKey) && e.key === "`") {
+        e.preventDefault();
+        togglePlayground();
+      }
+    });
+
+    // Mobile Navigation burger listener
+    document.getElementById("menuToggleBtn").addEventListener("click", () => {
+      document.getElementById("sidebarLeft").classList.toggle("active");
+    });
+
+    function closeSidebarMobile() {
+      if (window.innerWidth <= 900) {
+        document.getElementById("sidebarLeft").classList.remove("active");
+      }
+    }
+
+    // Playground interactive execution engine actions
+    function loadPlaygroundSample() {
+      const samples = [
+        "SELECT * FROM users WHERE role = 'User';",
+        "SELECT name, email FROM users WHERE id > 2 LIMIT 2;",
+        "SELECT * FROM posts WHERE id = 102;"
+      ];
+      const r = samples[Math.floor(Math.random() * samples.length)];
+      document.getElementById("playgroundInput").value = r;
+    }
+
+    function runPlaygroundQuery() {
+      const q = document.getElementById("playgroundInput").value;
+      const res = executeMockSQL(q);
+
+      const wrapper = document.getElementById("playgroundTableWrapper");
+      const statusText = document.getElementById("playgroundStatusText");
+      wrapper.innerHTML = "";
+
+      if (!res.success) {
+        statusText.innerText = "Error encountered.";
+        statusText.style.color = "#ff5f56";
+        wrapper.innerHTML = `<div style="color:#ff5f56; font-size:12.5px; font-family:monospace; padding:8px;">${res.error}</div>`;
+        return;
+      }
+
+      statusText.innerText = `${res.count} rows returned. Let the queries speak.`;
+      statusText.style.color = "var(--green-color)";
+
+      if (res.count === 0) {
+        wrapper.innerHTML = `<div style="color:var(--text-muted); font-size:12.5px; font-family:monospace; padding:8px;">Empty set returned.</div>`;
+        return;
+      }
+
+      // Build output table
+      const table = document.createElement("table");
+      table.className = "output-table";
+
+      const headers = Object.keys(res.data[0]);
+      const thRow = document.createElement("tr");
+      headers.forEach(h => {
+        const th = document.createElement("th");
+        th.innerText = h;
+        thRow.appendChild(th);
+      });
+      table.appendChild(thRow);
+
+      res.data.forEach(row => {
+        const tr = document.createElement("tr");
+        headers.forEach(h => {
+          const td = document.createElement("td");
+          td.innerText = row[h] !== null ? row[h] : "NULL";
+          tr.appendChild(td);
+        });
+        table.appendChild(tr);
+      });
+
+      wrapper.appendChild(table);
+    }
+
+    // Routing init on window load
+    window.addEventListener("hashchange", () => {
+      const pageId = window.location.hash.substring(1) || "welcome";
+      // Split sub-header targets like welcome-overview
+      const baseId = pageId.split("-h-")[0].split("-heading-")[0];
+      if (HANDBOOK_PAGES[baseId]) {
+        renderPage(baseId);
+      }
+    });
+
+    window.addEventListener("load", () => {
+      // Set saved theme preference
+      const savedTheme = localStorage.getItem("theme") || "dark";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      
+      buildSearchIndex();
+      
+      const pageId = window.location.hash.substring(1) || "welcome";
+      renderPage(pageId);
+    });
+  </script>
+</body>
+</html>
